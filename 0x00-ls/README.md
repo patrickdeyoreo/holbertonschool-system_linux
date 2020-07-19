@@ -51,7 +51,7 @@ Value | Description
 
 ### Compilation
 
-#### `gcc -Wall -Werror -Wextra -pedantic *.c -o hls`
+`gcc -Wall -Werror -Wextra -pedantic *.c -o hls`
 
 ---
 
