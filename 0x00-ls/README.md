@@ -37,15 +37,15 @@ Value | Description
 
 - List non-hidden entries in the current directory, one per line:
 
-#### `hls -1`
+`hls -1`
 
 - List all entries in the parent directory sorted by size:
 
-#### `hls -aS ../`
+`hls -aS ../`
 
 - Recursively list the contents of the directory `/var/log`:
 
-#### `hls -R /var/log`
+`hls -R /var/log`
 
 ---
 
