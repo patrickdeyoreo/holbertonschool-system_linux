@@ -1,6 +1,10 @@
 # 0x00. C - ls
 
+---
+
 ## `hls` - list directory contents
+
+---
 
 ### Usage
 
@@ -27,18 +31,29 @@ Value | Description
 `1`   | if minor problems (e.g., cannot access subdirectory),
 `2`   | if serious trouble (e.g., cannot access command-line argument).
 
+---
+
 ### Examples
 
 - List non-hidden entries in the current directory, one per line:
-`hls -1`
+
+#### `hls -1`
+
 - List all entries in the parent directory sorted by size:
-`hls -aS ../`
+
+#### `hls -aS ../`
+
 - Recursively list the contents of the directory `/var/log`:
-`hls -R /var/log`
+
+#### `hls -R /var/log`
+
+---
 
 ### Compilation
 
-`gcc -Wall -Werror -Wextra -pedantic *.c -o hls`
+#### `gcc -Wall -Werror -Wextra -pedantic *.c -o hls`
+
+---
 
 ### Author
 
