@@ -1,5 +1,11 @@
 # 0x00. C - ls
 
+## `hls`
+
+### Compilation
+
+`gcc -Wall -Werror -Wextra -pedantic *.c -o hls`
+
 ### Synopsis
 
 `ls` - list directory contents
@@ -10,16 +16,16 @@
 
 ### Options
 
-Option | Description
------- | ------------
-`-1`   | list one file per line
-`-A`   | do not list implied . and ..
-`-a`   | do not ignore entries starting with .
-`-l`   | use a long listing format
-`-R`   | list subdirectories recursively
-`-r`   | reverse order while sorting
-`-S`   | sort by file size, largest first
-`-t`   | sort by modification time, newest first
+Name | Description
+---- | ------------
+`-1` | list one file per line
+`-A` | do not list implied . and ..
+`-a` | do not ignore entries starting with .
+`-l` | use a long listing format
+`-R` | list subdirectories recursively
+`-r` | reverse order while sorting
+`-S` | sort by file size, largest first
+`-t` | sort by modification time, newest first
 
 ### Exit Status
 
