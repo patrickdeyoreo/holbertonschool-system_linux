@@ -5,9 +5,9 @@
 
 #include "list.h"
 
-typedef list_t queue_t;
+typedef list_node_t queue_node_t;
 
-queue_t *enqueue(queue_t **rear, const void *data);
-const void *dequeue(queue_t **rear);
+queue_node_t *enqueue(queue_node_t **rear, const void *data);
+const void *dequeue(queue_node_t **rear);
 
 #endif /* _QUEUE_H_ */

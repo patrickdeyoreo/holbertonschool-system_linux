@@ -7,9 +7,9 @@
  *
  * Return: a pointer to the new rear of the queue
  */
-queue_t *enqueue(queue_t **rear, const void *data)
+queue_node_t *enqueue(queue_node_t **rear, const void *data)
 {
-	queue_t *node = rear ? malloc(sizeof(*node)) : NULL;
+	queue_node_t *node = rear ? malloc(sizeof(*node)) : NULL;
 
 	if (node)
 	{
@@ -30,10 +30,10 @@ queue_t *enqueue(queue_t **rear, const void *data)
  *
  * Return: a pointer to the new rear of the queue
  */
-const void *dequeue(queue_t **rear)
+const void *dequeue(queue_node_t **rear)
 {
+	queue_node_t *front = rear && *rear ? (*rear)->next : NULL;
 	const void *data = NULL;
-	queue_t *front = rear && *rear ? (*rear)->next : NULL;
 
 	if (front)
 	{

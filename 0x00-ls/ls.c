@@ -1,9 +1,3 @@
-#include <dirent.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-
 #include "ls.h"
 
 /**
@@ -14,7 +8,7 @@
 int main(int argc, char **argv)
 {
 	DIR *dir = NULL;
-	struct dirent *entry = NULL; 
+	struct dirent *entry = NULL;
 
 	if (argc == 1)
 	{
