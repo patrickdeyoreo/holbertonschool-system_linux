@@ -1,1 +1,1 @@
-# Holberton School - Algorithms and Linux Programming
+# Holberton School - Systems Programming
