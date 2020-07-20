@@ -1,5 +1,5 @@
-#ifndef _OPT_H_
-#define _OPT_H_
+#ifndef _OPTION_H_
+#define _OPTION_H_
 
 #include <stdbool.h>
 #include <stdlib.h>
