@@ -7,9 +7,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
-#include "dir.h"
-#include "file.h"
-#include "opt.h"
+#include "entry.h"
+#include "option.h"
 #include "sort.h"
 #include "queue.h"
 

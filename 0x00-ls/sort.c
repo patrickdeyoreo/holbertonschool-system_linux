@@ -28,7 +28,7 @@ static size_t quicksort_part(
 				_memswap(element, swap_with, size);
 			}
 			lower += 1;
-			swap_with = (char *) swap_with + size; 
+			swap_with = (char *) swap_with + size;
 
 		}
 		index += 1;

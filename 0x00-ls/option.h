@@ -5,19 +5,20 @@
 #include <stdlib.h>
 
 /**
- * struct opt_s - a program option
- * @name: short option name
- * @description: option description
- * @enabled: option state
+ * struct option_s - a program option
+ * @name: single-character identifier
+ * @desc: option description
+ * @enabled: option state - enabled if true and disabled otherwise
  */
-typedef struct opt_s
+typedef struct option_s
 {
-	const char name;
-	const char *description;
+	char name;
+	const char *desc;
 	bool enabled;
-} opt_t;
+} option_t;
 
-#define OPTIONS_INIT {							\
+#define OPTION_TABLE_SIZE 0xff
+#define OPTION_TABLE_INIT {						\
 	{'1', "list one entry per line", false},			\
 	{'A', "list all entries except '.' and '..'", false},		\
 	{'a', "list all entries", false},				\
@@ -26,12 +27,13 @@ typedef struct opt_s
 	{'r', "list entries in reverse order", false},			\
 	{'S', "sort by file size (largest first)", false},		\
 	{'t', "sort by modification time (newest first)", false},	\
-	{0}								\
+	{'\0', NULL, false}						\
 }
-#define OPTIONS_SIZE 9
 
-typedef opt_t options_t[OPTIONS_SIZE];
+typedef option_t option_table_t[OPTION_TABLE_SIZE];
 
-options_t *import_options(void);
+option_table_t *options(void);
+bool option_is_defined(int c);
+bool option_is_enabled(int c);
 
-#endif /* _OPT_H_ */
+#endif /* _OPTION_H_ */

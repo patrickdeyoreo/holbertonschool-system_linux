@@ -4,6 +4,8 @@
  * main - entry point
  * @argc: the size of the argument vector
  * @argv: the argument vector
+ *
+ * Return: 0 on success, non-zero otherwise
  */
 int main(int argc, char **argv)
 {

@@ -17,6 +17,6 @@ typedef struct list_node_s
 void list_del(list_node_t **head);
 size_t list_len(const list_node_t *head);
 list_node_t *list_map_from_array(const void *base, size_t nmemb, size_t size);
-const void **list_map_to_array(const list_node_t *head, size_t size);
+const void * const *list_map_to_array(const list_node_t *head);
 
 #endif /* _LIST_H_ */

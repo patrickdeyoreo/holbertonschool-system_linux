@@ -26,7 +26,6 @@ queue_node_t *enqueue(queue_node_t **rear, const void *data)
 /**
  * dequeue - pop an item from the front of a queue
  * @rear: a pointer to the rear of a queue
- * @data: a pointer to the data to enqueue
  *
  * Return: a pointer to the new rear of the queue
  */
