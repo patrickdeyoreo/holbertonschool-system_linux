@@ -91,7 +91,7 @@ static void free_race_state(s_hash_table_t *state)
  */
 void race_state(int *id, size_t size)
 {
-	static s_hash_table_t state = {0};
+	static s_hash_table_t state;
 	s_hash_node_t **ref = NULL, *tmp = NULL;
 	int *stop = NULL;
 
