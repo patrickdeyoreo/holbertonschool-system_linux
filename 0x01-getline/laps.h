@@ -6,13 +6,7 @@
 #include <unistd.h>
 
 #define TABLE_SIZE 127
-
 #define HASH(x) ((x) % TABLE_SIZE)
-
-#define MESSAGE_ADDED_ID(x) ("Car " (x) " joined the race")
-#define MESSAGE_ID_LAPS(x, y) ("Car " (x) " [" (y) " laps]")
-
-#define PUTS(s) write(STDOUT_FILENO, (s), _strlen(s))
 
 /**
  * struct s_hash_node_s - a list node for two separate singly-linked lists

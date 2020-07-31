@@ -1,5 +1,8 @@
 #include "laps.h"
 
+#define PUTS(s) write(STDOUT_FILENO, (s), _strlen(s))
+#define PUTC(c) write(STDOUT_FILENO, &(c), 1)
+
 /**
  * _strlen - measure the length of a string
  * @s: the string to measure
@@ -18,19 +21,19 @@ static size_t _strlen(const char *s)
 }
 
 /**
- * printint - write an integer to stdout
+ * print_int - write an integer to stdout
  * @n: the integer
  */
-static void printint(int n)
+static void print_int(int n)
 {
-	char chr = '0' + (n < 0 ? -1 : 1) * (n % 10);
+	int sign = n > -1 ? 1 : -1;
+	char chr = '0' + ((n % 10) * sign);
 
 	if (n < 0)
-		write(STDOUT_FILENO, "-", 1);
+		PUTS("-");
 	if (n / 10)
-		printint((n < 0 ? -1 : 1) * (n / 10));
-
-	write(STDOUT_FILENO, &chr, 1);
+		print_int((n / 10) * sign);
+	PUTC(chr);
 }
 
 /**
@@ -44,9 +47,9 @@ static void print_race_state(const s_hash_node_t *head)
 		PUTS("Race state\n");
 		do {
 			PUTS("Car ");
-			printint(head->id);
+			print_int(head->id);
 			PUTS(" [");
-			printint(head->value);
+			print_int(head->value);
 			PUTS(" laps]\n");
 		} while ((head = head->s_next));
 	}
@@ -95,9 +98,13 @@ void race_state(int *id, size_t size)
 	s_hash_node_t **ref = NULL, *tmp = NULL;
 	int *stop = NULL;
 
-	if (size)
+	if (!size)
 	{
-		for (stop = id + size; id < stop; id += 1)
+		free_race_state(&state);
+	}
+	else if (id)
+	{
+		for (stop = id + size; id < stop; ++id)
 		{
 			ref = &state.table[HASH(*id)];
 			while (*ref && (*ref)->id != *id)
@@ -109,7 +116,7 @@ void race_state(int *id, size_t size)
 			else
 			{
 				PUTS("Car ");
-				printint(*id);
+				print_int(*id);
 				PUTS(" joined the race\n");
 				tmp = *ref = malloc(sizeof(*tmp));
 				if (tmp)
@@ -126,9 +133,5 @@ void race_state(int *id, size_t size)
 			}
 		}
 		print_race_state(state.sorted);
-	}
-	else
-	{
-		free_race_state(&state);
 	}
 }
