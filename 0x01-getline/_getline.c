@@ -62,7 +62,7 @@ ssize_t _getline_line(buf_t *buf, ssize_t *len, char **line, size_t *n)
 	if (*n < (size_t) (*len + eol + 2))
 	{
 		if (*line)
-			new = _realloc(*line, sizeof(**line) * (*n), sizeof(**line) * (*len + eol + 2));
+			new = _realloc((void *) *line, sizeof(**line) * (*n), sizeof(**line) * (*len + eol + 2));
 		else
 			new = malloc(sizeof(**line) * (*len + eol + 2));
 
@@ -105,7 +105,7 @@ ssize_t _getline_full(buf_t *buf, ssize_t *len, char **line, size_t *n)
 	if (*n < (size_t) (*len + rem + 1))
 	{
 		if (*line)
-			new = _realloc(*line, sizeof(**line) * (*n), sizeof(**line) * (*len + rem + 1));
+			new = _realloc((void *) *line, sizeof(**line) * (*n), sizeof(**line) * (*len + rem + 1));
 		else
 			new = malloc(sizeof(**line) * (*len + rem + 1));
 
