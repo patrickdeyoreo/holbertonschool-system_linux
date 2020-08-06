@@ -23,7 +23,7 @@ typedef struct buf_s
 char *_getline(const int fd);
 ssize_t _getline_line(buf_t *buf, ssize_t *len, char **line, size_t *n);
 ssize_t _getline_full(buf_t *buf, ssize_t *len, char **line, size_t *n);
-ssize_t _strnchr(const char *str, char c, size_t n);
-void *_realloc(void *buffer, size_t old_size, size_t new_size);
+ssize_t _strnchr(const char *s, char c, size_t n);
+void *_realloc(void *old, size_t old_size, size_t new_size);
 
 #endif /* _GETLINE_H_ */
