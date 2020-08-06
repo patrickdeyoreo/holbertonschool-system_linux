@@ -2,6 +2,7 @@
 #define _GETLINE_H_
 
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #define READ_SIZE 4096
@@ -12,7 +13,7 @@
  * @r_pos: the read position
  * @w_pos: the write position
  */
-typedef struct buf
+typedef struct buf_s
 {
 	char buffer[READ_SIZE];
 	char *r_pos;

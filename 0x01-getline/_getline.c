@@ -63,7 +63,7 @@ ssize_t _getline_line(buf_t *buf, ssize_t *len, char **line, size_t *n)
 	if (*n < (size_t) *len + eol + 2)
 	{
 		if (*line)
-			new = _realloc(*line, *n, sizeof(char) * (*len + eol + 2));
+			new = _realloc((void *) *line, *n, sizeof(char) * (*len + eol + 2));
 		else
 			new = malloc(sizeof(char) * (*len + eol + 2));
 
@@ -77,7 +77,7 @@ ssize_t _getline_line(buf_t *buf, ssize_t *len, char **line, size_t *n)
 		*line = new;
 		*n = *len + eol + 2;
 	}
-	_memcpy(*line + *len, buf->r_pos, eol + 1);
+	memcpy(*line + *len, buf->r_pos, eol + 1);
 	(*line)[*len + eol + 1] = '\0';
 
 	*len += eol + 1;
@@ -108,7 +108,7 @@ ssize_t _getline_full(buf_t *buf, ssize_t *len, char **line, size_t *n)
 	if (*n <= (size_t) *len + n_remaining)
 	{
 		if (*line)
-			new = _realloc(*line, *n, sizeof(char) * (*len + n_remaining + 1));
+			new = _realloc((void *) *line, *n, sizeof(char) * (*len + n_remaining + 1));
 		else
 			new = malloc(sizeof(char) * (*len + n_remaining + 1));
 
@@ -122,7 +122,7 @@ ssize_t _getline_full(buf_t *buf, ssize_t *len, char **line, size_t *n)
 		*line = new;
 		*n = *len + n_remaining + 1;
 	}
-	_memcpy(*line + *len, buf->r_pos, n_remaining);
+	memcpy(*line + *len, buf->r_pos, n_remaining);
 	(*line)[*len + n_remaining] = '\0';
 
 	*len += n_remaining;
@@ -152,7 +152,6 @@ ssize_t _strnchr(const char *str, char c, size_t n)
 		if (str[index] == c)
 			return (index);
 	}
-
 	return (-1);
 }
 
