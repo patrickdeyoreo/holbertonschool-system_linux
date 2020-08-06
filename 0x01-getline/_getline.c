@@ -166,7 +166,7 @@ void *_realloc(void *old, size_t old_size, size_t new_size)
 	void *new = NULL;
 
 	if (old)
-		dest = new = malloc(sizeof(*new) * new_size);
+		dest = new = malloc(new_size);
 
 	if (new)
 	{
