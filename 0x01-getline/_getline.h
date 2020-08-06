@@ -20,7 +20,6 @@ typedef struct buf
 } buf_t;
 
 char *_getline(const int fd);
-ssize_t _getline(char **line, size_t *n, int fd);
 ssize_t _getline_line(buf_t *buf, ssize_t *len, char **line, size_t *n);
 ssize_t _getline_full(buf_t *buf, ssize_t *len, char **line, size_t *n);
 ssize_t _strnchr(const char *str, char c, size_t n);

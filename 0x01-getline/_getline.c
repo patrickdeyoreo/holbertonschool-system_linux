@@ -5,7 +5,7 @@
  * @fd: file descriptor to read from
  * Return: NULL if an error occurs, otherwise a pointer to the line
  */
-char *_getline(int fd)
+char *_getline(const int fd)
 {
 	static buf_t buf = {{0}, buf.buffer, buf.buffer};
 	char *line = NULL;
