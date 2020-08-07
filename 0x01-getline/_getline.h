@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define FD_MAX 255
+#define TABLE_SIZE 127
 
 #define READ_SIZE 4096
 
@@ -29,9 +29,9 @@ typedef struct buf_s
  */
 typedef struct buf_table_s
 {
-	struct buf_table_s *next;
 	int fd;
-	struct buf_s *buf;
+	struct buf_s buf;
+	struct buf_table_s *next;
 } buf_table_t;
 
 char *_getline(const int fd);

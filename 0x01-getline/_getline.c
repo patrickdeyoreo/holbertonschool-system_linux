@@ -98,73 +98,49 @@ static char *_getline_next(buf_t *buf, char **line, size_t *size, size_t n)
 }
 
 /**
- * _getline_buf_reset - reset buffer table
- * @buf_table: buffers indexed by file descriptor
- */
-static void _getline_buf_reset(buf_table_t *(*buf_table)[FD_MAX + 1])
-{
-	buf_table_t *item = NULL;
-	size_t index = 0;
-
-	while (index < FD_MAX + 1)
-	{
-		while ((item = (*buf_table)[index]))
-		{
-			(*buf_table)[index] = item->next;
-			free(item->buf);
-			free(item);
-		}
-		index += 1;
-	}
-}
-
-/**
- * _getline_buf - add, get and free buffers
- * @buf_table: buffers indexed by file descriptor
+ * _getline_buf - create, get, and delete buffers
+ * @table: buffers indexed by file descriptor
  * @fd: file descriptor
  * Return: NULL or a pointer to the buffer associated with fd
  */
-static buf_t *_getline_buf(buf_table_t *(*buf_table)[FD_MAX + 1], int fd)
+static buf_t *_getline_buf(buf_table_t *(*table)[TABLE_SIZE], const int fd)
 {
-	buf_t *buf = NULL;
 	buf_table_t *item = NULL;
-	size_t index = 0;
+	size_t index = fd % TABLE_SIZE;
 
-	if (fd < 0)
+	if (table)
 	{
-		_getline_buf_reset(buf_table);
-	}
-	else
-	{
-		index = fd % (FD_MAX + 1);
-		item = (*buf_table)[index];
-		while (item && item->fd != fd)
-			item = item->next;
-		if (item == NULL)
+		if (fd < 0)
 		{
-			item = malloc(sizeof(*item));
-			if (item)
+			for (index = 0; index < TABLE_SIZE; index += 1)
 			{
-				item->next = (*buf_table)[index];
-				item->fd = fd;
-				item->buf = malloc(sizeof(*buf));
-				if (item->buf)
+				while ((item = (*table)[index]))
 				{
-					(*buf_table)[index] = item;
-					item->buf->next = NULL;
-					item->buf->remaining = 0;
-				}
-				else
-				{
+					(*table)[index] = item->next;
 					free(item);
-					item = NULL;
 				}
 			}
 		}
-		if (item)
-			buf = item->buf;
+		else
+		{
+			item = (*table)[index];
+			while (item && item->fd != fd)
+				item = item->next;
+			if (item == NULL)
+			{
+				item = malloc(sizeof(*item));
+				if (item)
+				{
+					item->fd = fd;
+					item->buf.next = NULL;
+					item->buf.remaining = 0;
+					item->next = (*table)[index];
+					(*table)[index] = item;
+				}
+			}
+		}
 	}
-	return (buf);
+	return (item ? &item->buf : NULL);
 }
 
 /**
@@ -175,8 +151,8 @@ static buf_t *_getline_buf(buf_table_t *(*buf_table)[FD_MAX + 1], int fd)
  */
 char *_getline(const int fd)
 {
-	static buf_table_t *buf_table[FD_MAX + 1];
-	buf_t *buf = _getline_buf(&buf_table, fd);
+	static buf_table_t *table[TABLE_SIZE];
+	buf_t *buf = _getline_buf(&table, fd);
 	char *line = NULL;
 	size_t size = 0;
 	ssize_t eol = 0, n_read = 0;
