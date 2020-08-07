@@ -3,12 +3,12 @@
 #include "_getline.h"
 
 /**
-  * _strnchr - get the index of the first matching character
-  * @s: string passed
-  * @c: character passed
-  * @n: max number of characters to check
-  * Return: Index of the first occurence, or -1 c is not found
-  */
+ * _strnchr - get the index of the first matching character
+ * @s: string passed
+ * @c: character passed
+ * @n: max number of characters to check
+ * Return: Index of the first occurence, or -1 c is not found
+ */
 static ssize_t _strnchr(const char *s, char c, size_t n)
 {
 	ssize_t i = 0;
@@ -56,7 +56,7 @@ static void *_realloc(void *old, size_t old_size, size_t new_size)
 	return (new);
 }
 
-/** 
+/**
  * _getline - read a line of input
  * @fd: file descriptor from which to read
  * Return: If an error occurs or there are no more lines, return NULL.
@@ -64,7 +64,7 @@ static void *_realloc(void *old, size_t old_size, size_t new_size)
  */
 char *_getline(const int fd)
 {
-	static buf_t buf;
+	static buf_t buf = {{0}, NULL, 0};
 	char *line = NULL, *aux = NULL;
 	size_t size = 0, new = 0;
 	ssize_t eol = 0, n_read = 0;
@@ -74,41 +74,31 @@ char *_getline(const int fd)
 
 	do {
 		if (n_read == -1)
-		{
-			free(line);
-			line = NULL;
-			break;
-		}
+			return (free(line), NULL);
 		if (buf.remaining == 0)
 			buf.next = buf.buffer;
 		if (n_read)
 			buf.remaining = n_read;
-		if (buf.remaining)
-		{
-			eol = _strnchr(buf.next, '\n', buf.remaining);
-			new = eol == -1 ? buf.remaining : eol;
-			aux = line ? _realloc((void *) line, size, size + new) : malloc(new + 1);
-			if (aux == NULL)
-			{
-				free(line);
-				line = NULL;
-				break;
-			}
-			line = aux;
-			if (size)
-				size -= 1;
-			memcpy(line + size, buf.next, new);
-			size += new;
-			line[size++] = '\0';
-			buf.remaining -= new;
-			buf.next += new;
-			if (eol != -1)
-			{
-				buf.remaining -= 1;
-				buf.next += 1;
-				break;
-			}
-		}
+		if (buf.remaining == 0)
+				continue;
+		eol = _strnchr(buf.next, '\n', buf.remaining);
+		new = eol == -1 ? buf.remaining : eol;
+		aux = line ? _realloc(line, size, size + new) : malloc(new + 1);
+		if (aux == NULL)
+			return (free(line), NULL);
+		line = aux;
+		if (size)
+			size -= 1;
+		memcpy(line + size, buf.next, new);
+		size += new;
+		line[size++] = '\0';
+		buf.remaining -= new;
+		buf.next += new;
+		if (eol == -1)
+			continue;
+		buf.remaining -= 1;
+		buf.next += 1;
+		return (line);
 	} while ((n_read = read(fd, buf.buffer, READ_SIZE)));
 	return (line);
 }
