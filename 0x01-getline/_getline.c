@@ -83,7 +83,7 @@ char *_getline(const int fd)
 			continue;
 		eol = _strnchr(buf.next, '\n', buf.remaining);
 		new = eol == -1 ? buf.remaining : eol;
-		aux = line ? _realloc(line, size, size + new) : malloc(new + 1);
+		aux = line ? _realloc((void *) line, size, size + new) : malloc(new + 1);
 		if (aux == NULL)
 			return (free(line), NULL);
 		line = aux;
