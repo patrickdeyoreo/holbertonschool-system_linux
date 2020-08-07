@@ -56,6 +56,46 @@ static void *_realloc(void *old, size_t old_size, size_t new_size)
 }
 
 /**
+ * _getline_from_buffer - read a line of input
+ * @buf: pointer to the static buffer
+ * @line: address of a pointer to the line
+ * @size: address of a pointer to the line size
+ * @n: number of characters to copy from the buffer
+ * Return: If an error occurs, return NULL.
+ * Otherwise, return a pointer to the line.
+ */
+static char *_getline_from_buffer(buf_t *buf, char **line, size_t *size, size_t n)
+{
+	char *temp = NULL;
+
+	if (*line)
+		temp = _realloc(*line, *size, *size + n);
+	else
+		temp = malloc(n + 1);
+
+	if (temp)
+	{
+		*line = temp;
+	
+		if (*size)
+			*size -= 1;
+	
+		memcpy(*line + *size, buf->next, n);
+		*size += n;
+	
+		(*line)[*size] = '\0';
+		*size += 1;
+	}
+	else
+	{
+		free(*line);
+		*line = NULL;
+		*size = 0;
+	}
+	return (*line);
+}
+
+/**
  * _getline - read a line of input
  * @fd: file descriptor from which to read
  * Return: If an error occurs or there are no more lines, return NULL.
@@ -63,72 +103,42 @@ static void *_realloc(void *old, size_t old_size, size_t new_size)
  */
 char *_getline(const int fd)
 {
-	static buf_t buf = {{0}, NULL, 0};
-	char *line = NULL, *temp = NULL;
+	static buf_t buf;
+	char *line = NULL;
 	size_t size = 0;
 	ssize_t eol = 0, n_read = 0;
 
-	if (fd < 0)
-		return (NULL);
-
-	do {
+	if (fd > -1)
+	{
+		do {
+			if (buf.remaining == 0)
+				buf.next = buf.buffer;
+			if (n_read)
+				buf.remaining = n_read;
+			if (buf.remaining)
+			{
+				eol = _memchr(buf.next, '\n', buf.remaining);
+				if (eol == -1)
+				{
+					if (_getline_from_buffer(&buf, &line, &size, buf.remaining))
+						buf.next += buf.remaining, buf.remaining = 0;
+					else
+						break;
+				}
+				else
+				{
+					if (_getline_from_buffer(&buf, &line, &size, eol))
+						buf.next += eol + 1, buf.remaining -= eol + 1;
+					break;
+				}
+			}
+		} while ((n_read = read(fd, buf.buffer, READ_SIZE)) > 0);
 		if (n_read == -1)
 		{
 			free(line);
 			line = NULL;
-			break;
+			size = 0;
 		}
-		if (buf.remaining == 0)
-			buf.next = buf.buffer;
-		if (n_read)
-			buf.remaining = n_read;
-		if (buf.remaining)
-		{
-			eol = _memchr(buf.next, '\n', buf.remaining);
-			if (eol == -1)
-			{
-				if (line)
-					temp = _realloc(line, size, size + buf.remaining);
-				else
-					temp = malloc(buf.remaining + 1);
-				if (!temp)
-				{
-					free(line);
-					line = NULL;
-					break;
-				}
-				line = temp;
-				if (size)
-					size -= 1;
-				memcpy(line + size, buf.next, buf.remaining);
-				size += buf.remaining;
-				line[size++] = '\0';
-				buf.next = buf.buffer;
-				buf.remaining = 0;
-			}
-			else
-			{
-				if (line)
-					temp = _realloc(line, size, size + eol);
-				else
-					temp = malloc(eol + 1);
-				if (!temp)
-				{
-					free(line);
-					line = NULL;
-					break;
-				}
-				line = temp;
-				if (size)
-					size -= 1;
-				memcpy(line + size, buf.next, eol);
-				size += eol;
-				line[size++] = '\0';
-				buf.next += eol + 1;
-				buf.remaining -= eol + 1;
-				break;
-			}
-		}
-	} while ((n_read = read(fd, buf.buffer, READ_SIZE)));
+	}
 	return (line);
 }
