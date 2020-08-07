@@ -150,6 +150,7 @@ static buf_t *_getline_buf(buf_table_t *(*buf_table)[FD_MAX + 1], int fd)
 				item->buf = malloc(sizeof(*buf));
 				if (item->buf)
 				{
+					(*buf_table)[index] = item;
 					item->buf->next = NULL;
 					item->buf->remaining = 0;
 				}
