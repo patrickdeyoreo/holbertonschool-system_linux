@@ -74,31 +74,41 @@ char *_getline(const int fd)
 
 	do {
 		if (n_read == -1)
-			return (free(line), NULL);
+		{
+			free(line);
+			line = NULL;
+			break;
+		}
 		if (buf.remaining == 0)
 			buf.next = buf.buffer;
 		if (n_read)
 			buf.remaining = n_read;
-		if (buf.remaining == 0)
-			continue;
-		eol = _strnchr(buf.next, '\n', buf.remaining);
-		new = eol == -1 ? buf.remaining : eol;
-		aux = line ? _realloc((void *) line, size, size + new) : malloc(new + 1);
-		if (aux == NULL)
-			return (free(line), NULL);
-		line = aux;
-		if (size)
-			size -= 1;
-		memcpy(line + size, buf.next, new);
-		size += new;
-		line[size++] = '\0';
-		buf.remaining -= new;
-		buf.next += new;
-		if (eol == -1)
-			continue;
-		buf.remaining -= 1;
-		buf.next += 1;
-		return (line);
+		if (buf.remaining)
+		{
+			eol = _strnchr(buf.next, '\n', buf.remaining);
+			new = eol == -1 ? buf.remaining : eol;
+			aux = line ? _realloc(line, size, size + new) : malloc(new + 1);
+			if (aux == NULL)
+			{
+				free(line);
+				line = NULL;
+				break;
+			}
+			line = aux;
+			if (size)
+				size -= 1;
+			memcpy(line + size, buf.next, new);
+			size += new;
+			line[size++] = '\0';
+			buf.remaining -= new;
+			buf.next += new;
+			if (eol != -1)
+			{
+				buf.remaining -= 1;
+				buf.next += 1;
+				break;
+			}
+		}
 	} while ((n_read = read(fd, buf.buffer, READ_SIZE)));
 	return (line);
 }
