@@ -64,7 +64,7 @@ static void *_realloc(void *old, size_t old_size, size_t new_size)
  */
 char *_getline(const int fd)
 {
-	static buf_t buf = {{0}};
+	static buf_t buf = {0};
 	char *line = NULL, *temp = NULL;
 	size_t size = 0;
 	ssize_t eol = 0, n_read = 0;
