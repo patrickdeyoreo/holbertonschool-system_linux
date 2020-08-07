@@ -44,7 +44,7 @@ static void print_race_state(const s_hash_node_t *head)
 {
 	if (head)
 	{
-		PUTS("Race state\n");
+		PUTS("Race state:\n");
 		do {
 			PUTS("Car ");
 			print_int(head->id);
