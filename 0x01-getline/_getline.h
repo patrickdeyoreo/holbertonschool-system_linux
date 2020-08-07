@@ -23,9 +23,9 @@ typedef struct buf_s
 
 /**
  * struct buf_table_s - input buffer hash table
- * @next: next buffer in chain
  * @fd: file descriptor
  * @buf: associated buffer
+ * @next: next buffer in chain
  */
 typedef struct buf_table_s
 {
