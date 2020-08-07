@@ -3,12 +3,12 @@
 #include "_getline.h"
 
 /**
-  * _strnchr - get the index of the first matching character
-  * @s: string passed
-  * @c: character passed
-  * @n: max number of characters to check
-  * Return: Index of the first occurence, or -1 c is not found
-  */
+ * _strnchr - get the index of the first matching character
+ * @s: string passed
+ * @c: character passed
+ * @n: max number of characters to check
+ * Return: Index of the first occurence, or -1 c is not found
+ */
 static ssize_t _strnchr(const char *s, char c, size_t n)
 {
 	ssize_t i = 0;
@@ -64,9 +64,9 @@ static void *_realloc(void *old, size_t old_size, size_t new_size)
  */
 char *_getline(const int fd)
 {
-	static buf_t buf;
-	char *line = NULL, *aux = NULL;
-	size_t size = 0, new = 0;
+	static buf_t buf = {{0}};
+	char *line = NULL, *temp = NULL;
+	size_t size = 0;
 	ssize_t eol = 0, n_read = 0;
 
 	if (fd < 0)
@@ -86,26 +86,47 @@ char *_getline(const int fd)
 		if (buf.remaining)
 		{
 			eol = _strnchr(buf.next, '\n', buf.remaining);
-			new = eol == -1 ? buf.remaining : eol;
-			aux = line ? _realloc((void *) line, size, size + new) : malloc(new + 1);
-			if (aux == NULL)
+			if (eol == -1)
 			{
-				free(line);
-				line = NULL;
-				break;
+				if (line)
+					temp = _realloc(line, size, size + buf.remaining);
+				else
+					temp = malloc(buf.remaining + 1);
+				if (!temp)
+				{
+					free(line);
+					line = NULL;
+					break;
+				}
+				line = temp;
+				if (size)
+					size -= 1;
+				memcpy(line + size, buf.next, buf.remaining);
+				size += buf.remaining;
+				line[size++] = '\0';
+				buf.next = buf.buffer;
+				buf.remaining = 0;
 			}
-			line = aux;
-			if (size)
-				size -= 1;
-			memcpy(line + size, buf.next, new);
-			size += new;
-			line[size++] = '\0';
-			buf.remaining -= new;
-			buf.next += new;
-			if (eol != -1)
+			else
 			{
-				buf.remaining -= 1;
-				buf.next += 1;
+				if (line)
+					temp = _realloc(line, size, size + eol);
+				else
+					temp = malloc(eol + 1);
+				if (!temp)
+				{
+					free(line);
+					line = NULL;
+					break;
+				}
+				line = temp;
+				if (size)
+					size -= 1;
+				memcpy(line + size, buf.next, eol);
+				size += eol;
+				line[size++] = '\0';
+				buf.next += eol + 1;
+				buf.remaining -= eol + 1;
 				break;
 			}
 		}
