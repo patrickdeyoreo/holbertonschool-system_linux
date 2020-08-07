@@ -98,6 +98,75 @@ static char *_getline_next(buf_t *buf, char **line, size_t *size, size_t n)
 }
 
 /**
+ * _getline_buf_reset - reset buffer table
+ * @buf_table: buffers indexed by file descriptor
+ */
+static void _getline_buf_reset(buf_table_t *(*buf_table)[FD_MAX + 1])
+{
+	buf_table_t *item = NULL;
+	size_t index = 0;
+
+	while (index < FD_MAX + 1)
+	{
+		while ((item = (*buf_table)[index]))
+		{
+			(*buf_table)[index] = item->next;
+			free(item->buf);
+			free(item);
+		}
+		index += 1;
+	}
+}
+
+/**
+ * _getline_buf - add, get and free buffers
+ * @buf_table: buffers indexed by file descriptor
+ * @fd: file descriptor
+ * Return: NULL or a pointer to the buffer associated with fd
+ */
+static buf_t *_getline_buf(buf_table_t *(*buf_table)[FD_MAX + 1], int fd)
+{
+	buf_t *buf = NULL;
+	buf_table_t *item = NULL;
+	size_t index = 0;
+
+	if (fd < 0)
+	{
+		_getline_buf_reset(buf_table);
+	}
+	else
+	{
+		index = fd % (FD_MAX + 1);
+		item = (*buf_table)[index];
+		while (item && item->fd != fd)
+			item = item->next;
+		if (item == NULL)
+		{
+			item = malloc(sizeof(*item));
+			if (item)
+			{
+				item->next (*buf_table)[index];
+				item->fd = fd;
+				item->buf = malloc(sizeof(*buf));
+				if (item->buf)
+				{
+					item->buf->next = NULL;
+					item->buf->remaining = 0;
+				}
+				else
+				{
+					free(item);
+					item = NULL;
+				}
+			}
+		}
+		if (item)
+			buf = item->buf;
+	}
+	return (buf);
+}
+
+/**
  * _getline - read a line of input
  * @fd: file descriptor from which to read
  * Return: If an error occurs or there are no more lines, return NULL.
@@ -105,36 +174,37 @@ static char *_getline_next(buf_t *buf, char **line, size_t *size, size_t n)
  */
 char *_getline(const int fd)
 {
-	static buf_t buf;
+	static buf_table_t *buf_table[FD_MAX + 1];
+	buf_t *buf = _getline_buf(&buf_table, fd);
 	char *line = NULL;
 	size_t size = 0;
 	ssize_t eol = 0, n_read = 0;
 
-	if (fd > -1)
+	if (buf)
 	{
 		do {
-			if (buf.remaining == 0)
-				buf.next = buf.buffer;
+			if (buf->remaining == 0)
+				buf->next = buf->buffer;
 			if (n_read)
-				buf.remaining = n_read;
-			if (buf.remaining)
+				buf->remaining = n_read;
+			if (buf->remaining)
 			{
-				eol = _memchr(buf.next, '\n', buf.remaining);
+				eol = _memchr(buf->next, '\n', buf->remaining);
 				if (eol == -1)
 				{
-					if (_getline_next(&buf, &line, &size, buf.remaining))
-						buf.next += buf.remaining, buf.remaining = 0;
+					if (_getline_next(&buf, &line, &size, buf->remaining))
+						buf->next += buf->remaining, buf->remaining = 0;
 					else
 						break;
 				}
 				else
 				{
 					if (_getline_next(&buf, &line, &size, eol))
-						buf.next += eol + 1, buf.remaining -= eol + 1;
+						buf->next += eol + 1, buf->remaining -= eol + 1;
 					break;
 				}
 			}
-		} while ((n_read = read(fd, buf.buffer, READ_SIZE)) > 0);
+		} while ((n_read = read(fd, buf->buffer, READ_SIZE)) > 0);
 		if (n_read == -1)
 		{
 			free(line);
