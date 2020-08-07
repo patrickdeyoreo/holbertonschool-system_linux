@@ -145,7 +145,7 @@ static buf_t *_getline_buf(buf_table_t *(*buf_table)[FD_MAX + 1], int fd)
 			item = malloc(sizeof(*item));
 			if (item)
 			{
-				item->next (*buf_table)[index];
+				item->next = (*buf_table)[index];
 				item->fd = fd;
 				item->buf = malloc(sizeof(*buf));
 				if (item->buf)
@@ -192,14 +192,14 @@ char *_getline(const int fd)
 				eol = _memchr(buf->next, '\n', buf->remaining);
 				if (eol == -1)
 				{
-					if (_getline_next(&buf, &line, &size, buf->remaining))
+					if (_getline_next(buf, &line, &size, buf->remaining))
 						buf->next += buf->remaining, buf->remaining = 0;
 					else
 						break;
 				}
 				else
 				{
-					if (_getline_next(&buf, &line, &size, eol))
+					if (_getline_next(buf, &line, &size, eol))
 						buf->next += eol + 1, buf->remaining -= eol + 1;
 					break;
 				}
