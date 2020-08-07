@@ -56,7 +56,7 @@ static void *_realloc(void *old, size_t old_size, size_t new_size)
 	return (new);
 }
 
-/** 
+/**
  * _getline - read a line of input
  * @fd: file descriptor from which to read
  * Return: If an error occurs or there are no more lines, return NULL.
@@ -64,7 +64,7 @@ static void *_realloc(void *old, size_t old_size, size_t new_size)
  */
 char *_getline(const int fd)
 {
-	static buf_t buf = {0};
+	static buf_t buf = {{0}, NULL, 0};
 	char *line = NULL, *temp = NULL;
 	size_t size = 0;
 	ssize_t eol = 0, n_read = 0;
