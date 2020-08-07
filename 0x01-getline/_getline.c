@@ -78,13 +78,13 @@ static char *_getline_next(buf_t *buf, char **line, size_t *size, size_t n)
 	if (temp)
 	{
 		*line = temp;
-	
+
 		if (*size)
 			*size -= 1;
-	
+
 		memcpy(*line + *size, buf->next, n);
 		*size += n;
-	
+
 		(*line)[*size] = '\0';
 		*size += 1;
 	}
