@@ -3,25 +3,24 @@
 #include "_getline.h"
 
 /**
- * _strnchr - get the index of the first matching character
- * @s: string passed
- * @c: character passed
- * @n: max number of characters to check
- * Return: Index of the first occurence, or -1 c is not found
+ * _memchr - get the index of the first matching value
+ * @s: array to search
+ * @c: value to find
+ * @n: number of elements to check
+ * Return: index of the first occurence of c, or -1 if c does not occur
  */
-static ssize_t _strnchr(const char *s, char c, size_t n)
+static ssize_t _memchr(const char *s, char c, size_t n)
 {
 	ssize_t i = 0;
 
-	if (n && s)
+	if (s)
 	{
-		while (n && s[i] && s[i] != c)
+		while (n--)
 		{
+			if (s[i] == c)
+				return (i);
 			i += 1;
-			n -= 1;
 		}
-		if (n && s[i] == c)
-			return (i);
 	}
 	return (-1);
 }
@@ -85,7 +84,7 @@ char *_getline(const int fd)
 			buf.remaining = n_read;
 		if (buf.remaining)
 		{
-			eol = _strnchr(buf.next, '\n', buf.remaining);
+			eol = _memchr(buf.next, '\n', buf.remaining);
 			if (eol == -1)
 			{
 				if (line)
