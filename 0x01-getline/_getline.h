@@ -22,17 +22,19 @@ typedef struct buf_s
 } buf_t;
 
 /**
- * struct buf_table_s - input buffer hash table
+ * struct buf_table_node_s - input buffer hash table
  * @fd: file descriptor
  * @buf: associated buffer
  * @next: next buffer in chain
  */
-typedef struct buf_table_s
+typedef struct buf_table_node_s
 {
 	int fd;
 	struct buf_s buf;
-	struct buf_table_s *next;
-} buf_table_t;
+	struct buf_table_node_s *next;
+} buf_table_node_t;
+
+typedef buf_table_node_t *buf_table_t[TABLE_SIZE];
 
 char *_getline(const int fd);
 

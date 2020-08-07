@@ -103,9 +103,9 @@ static char *_getline_next(buf_t *buf, char **line, size_t *size, size_t n)
  * @fd: file descriptor
  * Return: NULL or a pointer to the buffer associated with fd
  */
-static buf_t *_getline_buf(buf_table_t *(*table)[TABLE_SIZE], const int fd)
+static buf_t *_getline_buf(buf_table_t *table, const int fd)
 {
-	buf_table_t *item = NULL;
+	buf_table_node_t *item = NULL;
 	size_t index = fd % TABLE_SIZE;
 
 	if (table)
@@ -151,7 +151,7 @@ static buf_t *_getline_buf(buf_table_t *(*table)[TABLE_SIZE], const int fd)
  */
 char *_getline(const int fd)
 {
-	static buf_table_t *table[TABLE_SIZE];
+	static buf_table_t table;
 	buf_t *buf = _getline_buf(&table, fd);
 	char *line = NULL;
 	size_t size = 0;
