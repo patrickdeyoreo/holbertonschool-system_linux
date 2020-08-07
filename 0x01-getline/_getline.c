@@ -2,77 +2,14 @@
 
 #include "_getline.h"
 
-/** 
- * _getline - read a line of input
- * @fd: file descriptor from which to read
- * Return: If an error occurs or there are no more lines, return NULL.
- * Otherwise, return the next line of input.
- */
-char *_getline(const int fd)
-{
-	static buf_t buf;
-	char *line = NULL, *temp = NULL;
-	size_t size = 0;
-	ssize_t eol = -1, n_read = 0;
-
-	if (fd < 0)
-		return (NULL);
-
-	do {
-		if (buf.remaining == 0)
-			buf.next = buf.buffer;
-		if (n_read)
-			buf.remaining = n_read;
-		if (buf.remaining)
-		{
-			eol = _strnchr(buf.next, '\n', buf.remaining);
-			if (eol == -1)
-			{
-				temp = line ? _realloc(line, size, size + buf.remaining) : malloc(buf.remaining + 1);
-				if (!temp)
-					break;
-				line = temp;
-				if (size)
-					size -= 1;
-				memcpy(line + size, buf.next, buf.remaining);
-				size += buf.remaining;
-				line[size++] = '\0';
-				buf.next = buf.buffer;
-				buf.remaining = 0;
-			}
-			else
-			{
-				temp = line ? _realloc(line, size, size + eol) : malloc(eol + 1);
-				if (!temp)
-					break;
-				line = temp;
-				if (size)
-					size -= 1;
-				memcpy(line + size, buf.next, eol);
-				size += eol;
-				line[size++] = '\0';
-				buf.next += eol + 1;
-				buf.remaining -= eol + 1;
-				break;
-			}
-		}
-	} while ((n_read = read(fd, buf.buffer, READ_SIZE)) > 0);
-	if (n_read == -1)
-	{
-		free(line);
-		line = NULL;
-	}
-	return (line);
-}
-
 /**
-  * _strnchr - get the index of the first matching character
-  * @s: string passed
-  * @c: character passed
-  * @n: max number of characters to check
-  * Return: Index of the first occurence, or -1 c is not found
-  */
-ssize_t _strnchr(const char *s, char c, size_t n)
+ * _strnchr - get the index of the first matching character
+ * @s: string passed
+ * @c: character passed
+ * @n: max number of characters to check
+ * Return: Index of the first occurence, or -1 c is not found
+ */
+static ssize_t _strnchr(const char *s, char c, size_t n)
 {
 	ssize_t i = 0;
 
@@ -96,7 +33,7 @@ ssize_t _strnchr(const char *s, char c, size_t n)
  * @new_size: desired size of the buffer
  * Return: NULL if memory allocation fails, otherwise a pointer to the new buffer
  */
-void *_realloc(void *old, size_t old_size, size_t new_size)
+static void *_realloc(void *old, size_t old_size, size_t new_size)
 {
 	void *new = NULL;
 
@@ -117,4 +54,82 @@ void *_realloc(void *old, size_t old_size, size_t new_size)
 		}
 	}
 	return (new);
+}
+
+/** 
+ * _getline - read a line of input
+ * @fd: file descriptor from which to read
+ * Return: If an error occurs or there are no more lines, return NULL.
+ * Otherwise, return the next line of input.
+ */
+char *_getline(const int fd)
+{
+	static buf_t buf = {{0}};
+	char *line = NULL, *temp = NULL;
+	size_t size = 0;
+	ssize_t eol = 0, n_read = 0;
+
+	if (fd < 0)
+		return (NULL);
+
+	do {
+		if (n_read == -1)
+		{
+			free(line);
+			line = NULL;
+			break;
+		}
+		if (buf.remaining == 0)
+			buf.next = buf.buffer;
+		if (n_read)
+			buf.remaining = n_read;
+		if (buf.remaining)
+		{
+			eol = _strnchr(buf.next, '\n', buf.remaining);
+			if (eol == -1)
+			{
+				if (line)
+					temp = _realloc(line, size, size + buf.remaining);
+				else
+					temp = malloc(buf.remaining + 1);
+				if (!temp)
+				{
+					free(line);
+					line = NULL;
+					break;
+				}
+				line = temp;
+				if (size)
+					size -= 1;
+				memcpy(line + size, buf.next, buf.remaining);
+				size += buf.remaining;
+				line[size++] = '\0';
+				buf.next = buf.buffer;
+				buf.remaining = 0;
+			}
+			else
+			{
+				if (line)
+					temp = _realloc(line, size, size + eol);
+				else
+					temp = malloc(eol + 1);
+				if (!temp)
+				{
+					free(line);
+					line = NULL;
+					break;
+				}
+				line = temp;
+				if (size)
+					size -= 1;
+				memcpy(line + size, buf.next, eol);
+				size += eol;
+				line[size++] = '\0';
+				buf.next += eol + 1;
+				buf.remaining -= eol + 1;
+				break;
+			}
+		}
+	} while ((n_read = read(fd, buf.buffer, READ_SIZE)));
+	return (line);
 }

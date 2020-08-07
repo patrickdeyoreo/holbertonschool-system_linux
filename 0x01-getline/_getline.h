@@ -20,7 +20,5 @@ typedef struct buf_s
 } buf_t;
 
 char *_getline(const int fd);
-ssize_t _strnchr(const char *s, char c, size_t n);
-void *_realloc(void *old, size_t old_size, size_t new_size);
 
 #endif /* _GETLINE_H_ */
