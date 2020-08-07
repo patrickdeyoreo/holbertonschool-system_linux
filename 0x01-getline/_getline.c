@@ -175,7 +175,7 @@ static buf_t *_getline_buf(buf_table_t *(*buf_table)[FD_MAX + 1], int fd)
  */
 char *_getline(const int fd)
 {
-	static buf_table_t *buf_table[FD_MAX + 1] = {0};
+	static buf_table_t *buf_table[FD_MAX + 1];
 	buf_t *buf = _getline_buf(&buf_table, fd);
 	char *line = NULL;
 	size_t size = 0;
