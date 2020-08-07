@@ -71,6 +71,7 @@ char *_getline(const int fd)
 
 	if (fd < 0)
 		return (NULL);
+
 	do {
 		if (n_read == -1)
 			return (free(line), NULL);
@@ -85,6 +86,7 @@ char *_getline(const int fd)
 		aux = line ? _realloc(line, size, size + new) : malloc(new + 1);
 		if (aux == NULL)
 			return (free(line), NULL);
+		line = aux;
 		if (size)
 			size -= 1;
 		memcpy(line + size, buf.next, new);
