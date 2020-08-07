@@ -1,133 +1,69 @@
+#include <string.h>
+
 #include "_getline.h"
 
-/**
+/** 
  * _getline - read a line of input
- * @fd: file descriptor to read from
- * Return: NULL if an error occurs, otherwise a pointer to the line
+ * @fd: file descriptor from which to read
+ * Return: If an error occurs or there are no more lines, return NULL.
+ * Otherwise, return the next line of input.
  */
 char *_getline(const int fd)
 {
-	static buf_t buf = {{0}, buf.buffer, buf.buffer};
-	char *line = NULL;
-	size_t n = 0;
-	ssize_t len = 0;
-	ssize_t n_read = 0;
+	static buf_t buf;
+	char *line = NULL, *temp = NULL;
+	size_t size = 0;
+	ssize_t eol = -1, n_read = 0;
 
 	if (fd < 0)
 		return (NULL);
 
 	do {
-		if (n_read == -1)
-			return (free(line), NULL);
-
+		if (buf.remaining == 0)
+			buf.next = buf.buffer;
 		if (n_read)
-			buf.w_pos = buf.buffer + n_read;
-
-		if (_getline_line(&buf, &len, &line, &n))
-			return (line);
-
-		if (_getline_full(&buf, &len, &line, &n) == -1)
-			return (NULL);
-
-	} while ((n_read = read(fd, buf.buffer, READ_SIZE)));
-
-	if (!line)
-		line = malloc(sizeof(*line));
-
-	if (line)
-		line[len] = '\0';
-
+			buf.remaining = n_read;
+		if (buf.remaining)
+		{
+			eol = _strnchr(buf.next, '\n', buf.remaining);
+			if (eol == -1)
+			{
+				temp = line ? _realloc(line, size, size + buf.remaining) : malloc(buf.remaining + 1);
+				if (!temp)
+					break;
+				line = temp;
+				if (size)
+					size -= 1;
+				memcpy(line + size, buf.next, buf.remaining);
+				size += buf.remaining;
+				line[size++] = '\0';
+				buf.next = buf.buffer;
+				buf.remaining = 0;
+			}
+			else
+			{
+				temp = line ? _realloc(line, size, size + eol) : malloc(eol + 1);
+				if (!temp)
+					break;
+				line = temp;
+				if (size)
+					size -= 1;
+				memcpy(line + size, buf.next, eol);
+				size += eol;
+				line[size++] = '\0';
+				buf.next += eol + 1;
+				buf.remaining -= eol + 1;
+				break;
+			}
+		}
+	} while ((n_read = read(fd, buf.buffer, READ_SIZE)) > 0);
+	if (n_read == -1)
+	{
+		free(line);
+		line = NULL;
+	}
 	return (line);
 }
-
-
-/**
- * _getline_line - get a line from the buffer
- * @buf: pointer to the buffer structure to read from
- * @len: pointer to the current line length
- * @line: pointer to the line buffer
- * @n: pointer to the size of the line buffer
- * Return: If memory allocation fails, return -1.
- * If a line terminator ('\n') is not found, return 0.
- * Otherwise, return the total length of the line.
- */
-ssize_t _getline_line(buf_t *buf, ssize_t *len, char **line, size_t *n)
-{
-	char *new = NULL;
-	ssize_t eol = _strnchr(buf->r_pos, '\n', buf->w_pos - buf->r_pos);
-
-	if (eol == -1)
-		return (0);
-
-	if (*n < (size_t) (*len + eol + 2))
-	{
-		if (*line)
-			new = _realloc((void *) *line, sizeof(**line) * (*n), sizeof(**line) * (*len + eol + 2));
-		else
-			new = malloc(sizeof(**line) * (*len + eol + 2));
-
-		if (!new)
-		{
-			free(*line);
-			*line = NULL;
-			*n = 0;
-			*len = (-1);
-			return (-1);
-		}
-		*line = new;
-		*n = *len + eol + 2;
-	}
-	memcpy(*line + *len, buf->r_pos, eol + 1);
-	(*line)[(*len += eol + 1)] = '\0';
-
-	buf->r_pos += eol + 1;
-	if (buf->w_pos < buf->r_pos + 1)
-		buf->w_pos = buf->r_pos = buf->buffer;
-
-	return (*len);
-}
-
-
-/**
- * _getline_full - copy the whole buffer
- * @buf: pointer to the buffer structure to read from
- * @len: pointer to the current line length
- * @line: pointer to the line buffer
- * @n: pointer to the size of the line buffer
- * Return: If memory allocation fails, return -1.
- * Otherwise, return the total length of the line.
- */
-ssize_t _getline_full(buf_t *buf, ssize_t *len, char **line, size_t *n)
-{
-	char *new = NULL;
-	size_t rem = buf->w_pos - buf->r_pos;
-
-	if (*n < (size_t) (*len + rem + 1))
-	{
-		if (*line)
-			new = _realloc((void *) *line, sizeof(**line) * (*n), sizeof(**line) * (*len + rem + 1));
-		else
-			new = malloc(sizeof(**line) * (*len + rem + 1));
-
-		if (!new)
-		{
-			free(*line);
-			*line = NULL;
-			*n = 0;
-			*len = (-1);
-			return (-1);
-		}
-		*line = new;
-		*n = *len + rem + 1;
-	}
-	memcpy(*line + *len, buf->r_pos, rem);
-	(*line)[(*len += rem)] = '\0';
-
-	buf->w_pos = buf->r_pos = buf->buffer;
-
-	return (*len);
-}
-
 
 /**
   * _strnchr - get the index of the first matching character
@@ -162,17 +98,23 @@ ssize_t _strnchr(const char *s, char c, size_t n)
  */
 void *_realloc(void *old, size_t old_size, size_t new_size)
 {
-	unsigned char *src = old, *dest = NULL;
 	void *new = NULL;
 
 	if (old)
-		dest = new = malloc(new_size);
-
-	if (new)
 	{
-		while (old_size-- && new_size--)
-			*dest++ = *src++;
-		free(old);
+		if (new_size)
+		{
+			new = malloc(new_size);
+			if (new)
+			{
+				memcpy(new, old, old_size < new_size ? old_size : new_size);
+				free(old);
+			}
+		}
+		else
+		{
+			free(old);
+		}
 	}
 	return (new);
 }
