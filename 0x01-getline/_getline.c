@@ -7,7 +7,8 @@
  * @s: array to search
  * @c: value to find
  * @n: number of elements to check
- * Return: index of the first occurence of c, or -1 if c does not occur
+ * Return: If c does not occur in the first n elements of s, return -1.
+ * Otherwise, return the index of the first occurence of c.
  */
 static ssize_t _memchr(const char *s, char c, size_t n)
 {
@@ -30,7 +31,8 @@ static ssize_t _memchr(const char *s, char c, size_t n)
  * @old: pointer to the buffer
  * @old_size: current size of the buffer
  * @new_size: desired size of the buffer
- * Return: NULL if memory allocation fails, otherwise a pointer to the new buffer
+ * Return: If memory allocation fails, return NULL.
+ * Otherwise, return a pointer to the new buffer.
  */
 static void *_realloc(void *old, size_t old_size, size_t new_size)
 {
@@ -56,15 +58,15 @@ static void *_realloc(void *old, size_t old_size, size_t new_size)
 }
 
 /**
- * _getline_from_buffer - read a line of input
+ * _getline_next - read a line of input
  * @buf: pointer to the static buffer
  * @line: address of a pointer to the line
  * @size: address of a pointer to the line size
  * @n: number of characters to copy from the buffer
- * Return: If an error occurs, return NULL.
- * Otherwise, return a pointer to the line.
+ * Return: If memory allocation fails, return NULL.
+ * Otherwise, return a pointer to the line of input.
  */
-static char *_getline_from_buffer(buf_t *buf, char **line, size_t *size, size_t n)
+static char *_getline_next(buf_t *buf, char **line, size_t *size, size_t n)
 {
 	char *temp = NULL;
 
@@ -120,14 +122,14 @@ char *_getline(const int fd)
 				eol = _memchr(buf.next, '\n', buf.remaining);
 				if (eol == -1)
 				{
-					if (_getline_from_buffer(&buf, &line, &size, buf.remaining))
+					if (_getline_next(&buf, &line, &size, buf.remaining))
 						buf.next += buf.remaining, buf.remaining = 0;
 					else
 						break;
 				}
 				else
 				{
-					if (_getline_from_buffer(&buf, &line, &size, eol))
+					if (_getline_next(&buf, &line, &size, eol))
 						buf.next += eol + 1, buf.remaining -= eol + 1;
 					break;
 				}
