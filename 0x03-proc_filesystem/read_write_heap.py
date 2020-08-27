@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Hack the virtual memory."""
+"""Hack the VM."""
 
 import argparse
 import os
@@ -17,12 +17,13 @@ def parse_args():
 
 def main():
     """Hack the virtual memory."""
-    try:
-        with sys.stdout as sys.stderr:
-            args = parse_args()
-    except SystemExit:
-        return 1
+    with sys.stdout as sys.stderr:
+        args = parse_args()
+    return 
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except SystemExit:
+        sys.exit(1)
