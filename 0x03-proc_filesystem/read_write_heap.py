@@ -19,7 +19,6 @@ def main():
     """Hack the virtual memory."""
     with sys.stdout as sys.stderr:
         args = parse_args()
-    return 
 
 
 if __name__ == '__main__':
