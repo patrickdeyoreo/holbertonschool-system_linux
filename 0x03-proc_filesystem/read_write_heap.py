@@ -72,7 +72,7 @@ def write_heap(entry, offset, **kwgs):
     """Read and write the process memory."""
     with open('/proc/{pid}/mem'.format(**kwgs), 'rb+') as iostreamb:
         iostreamb.seek(entry.address[0] + offset)
-        return iostreamb.write(kwgs['replace'].encode())
+        return iostreamb.write('{replace}\0'.format(**kwgs).encode())
 
 
 def main():
