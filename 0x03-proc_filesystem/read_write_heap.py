@@ -12,17 +12,13 @@ def parse_args():
     parser.add_argument('pid', metavar='PID', type=int, help='process ID')
     parser.add_argument('search', metavar='SEARCH', help='search string')
     parser.add_argument('replace', metavar='REPLACE', help='replace string')
-    stderr, sys.stderr = sys.stderr, sys.stdout
-    try:
-        args = parser.parse_args()
-    finally:
-        sys.stderr = stderr
-    return args
+    return parser.parse_args()
 
 
 def main():
     """Hack the virtual memory."""
-    args = parse_args()
+    with sys.stdout as sys.stderr:
+        args = parse_args()
 
 
 if __name__ == '__main__':
