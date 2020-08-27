@@ -65,7 +65,7 @@ def read_heap(entry, **kwgs):
 
 def search_heap(heap, **kwgs):
     """Find the index of a string in the heap."""
-    return heap.index('{search}\0'.format(**kwgs).encode())
+    return heap.index('{search}'.format(**kwgs).encode())
 
 
 def write_heap(entry, offset, **kwgs):
