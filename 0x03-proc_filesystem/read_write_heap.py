@@ -42,10 +42,10 @@ def stdout_as_stderr():
 
 def parse_args():
     """Parse command-line arguments."""
-    parser = argparse.ArgumentParser(os.path.basename(__file__))
-    parser.add_argument('pid', metavar='PID', type=int, help='process ID')
-    parser.add_argument('search', metavar='SEARCH', help='search string')
-    parser.add_argument('replace', metavar='REPLACE', help='replace string')
+    parser = argparse.ArgumentParser(os.path.basename(__file__), add_help=0)
+    parser.add_argument(dest='pid', type=int, help='process ID')
+    parser.add_argument(dest='search', metavar='search_string')
+    parser.add_argument(dest='replace', metavar='replace_string')
     return parser.parse_args()
 
 
@@ -87,7 +87,7 @@ def main():
         heap = read_heap(maps['[heap]'], **kwgs)
         offset = search_heap(heap, **kwgs)
         write_heap(maps['[heap]'], offset, **kwgs)
-    except (IOError, KeyError, ValueError) as exc:
+    except (KeyError, OSError, ValueError) as exc:
         print(exc, file=sys.stderr)
         return 1
     else:
