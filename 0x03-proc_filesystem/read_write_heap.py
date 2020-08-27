@@ -2,38 +2,39 @@
 """Hack the VM."""
 
 import argparse
-import collections
 import contextlib
-import functools
-import itertools
-import operator
 import os
 import sys
 
 
 class MapEntry:
-    """A process memory-map entry."""
+    """Represent a memory-map entry."""
     # pylint: disable=too-few-public-methods
-
-    pmap = {'r': 4, 'w': 2, 'x': 1, 'p': 0, 's': 0, '-': 0}
-    Dev = collections.namedtuple('dev', ('major', 'minor'))
-
     def __init__(self, address, perms, offset, dev, inode, pathname=None):
         """Initialize a memory-map entry."""
         # pylint: disable=too-many-arguments
         self.address = tuple(int(x, 0x10) for x in address.split('-', 1))
-        self.perms = functools.reduce(operator.or_, map(self.pmap.get, perms))
+        self.perms = perms
         self.offset = int(offset, 0x10)
-        self.dev = self.Dev(*dev.split(':', 1))
-        self.inode = int(inode) or None
+        self.dev = dev
+        self.inode = int(inode)
         self.pathname = pathname
+
+
+class SearchString(argparse.Action):
+    """Accept a string of non-zero length."""
+    # pylint: disable=too-few-public-methods
+    def __call__(self, parser, namespace, value, option_string=None):
+        """Take action based on arguments."""
+        if len(value) == 0:
+            parser.error("{} cannot be the empty string".format(self.dest))
+        setattr(namespace, self.dest, value)
 
 
 @contextlib.contextmanager
 def stdout_as_stderr():
     """Temporarily redirect stderr to stdout."""
-    stderr = sys.stderr
-    sys.stderr = sys.stdout
+    stderr, sys.stderr = sys.stderr, sys.stdout
     try:
         yield
     finally:
@@ -42,25 +43,25 @@ def stdout_as_stderr():
 
 def parse_args():
     """Parse command-line arguments."""
-    parser = argparse.ArgumentParser(os.path.basename(__file__), add_help=0)
-    parser.add_argument(dest='pid', type=int, help='process ID')
-    parser.add_argument(dest='search', metavar='search_string')
-    parser.add_argument(dest='replace', metavar='replace_string')
-    return parser.parse_args()
+    parser = argparse.ArgumentParser(os.path.basename(__file__))
+    parser.add_argument('pid', type=int, help="process ID")
+    parser.add_argument('search', action=SearchString, help="search string")
+    parser.add_argument('replace', help="replacement string")
+    with stdout_as_stderr():
+        return parser.parse_args()
 
 
 def read_maps(**kwgs):
     """Get the memory-map of a process."""
-    split = operator.methodcaller('split')
-    with open('/proc/{pid}/maps'.format(**kwgs), 'r') as istream:
-        return itertools.starmap(MapEntry, map(split, istream.readlines()))
+    with open('/proc/{pid}/maps'.format(**kwgs)) as istream:
+        return [MapEntry(*line.split()) for line in istream]
 
 
-def read_heap(entry, **kwgs):
+def read_heap(mmap, **kwgs):
     """Read and write the process memory."""
     with open('/proc/{pid}/mem'.format(**kwgs), 'rb') as istreamb:
-        istreamb.seek(entry.address[0])
-        return istreamb.read(operator.sub(*entry.address[::-1]))
+        istreamb.seek(mmap.address[0])
+        return istreamb.read(mmap.address[1] - mmap.address[0])
 
 
 def search_heap(heap, **kwgs):
@@ -68,25 +69,24 @@ def search_heap(heap, **kwgs):
     return heap.index('{search}'.format(**kwgs).encode())
 
 
-def write_heap(entry, offset, **kwgs):
+def write_heap(mmap, offset, **kwgs):
     """Read and write the process memory."""
     with open('/proc/{pid}/mem'.format(**kwgs), 'rb+') as iostreamb:
-        iostreamb.seek(entry.address[0] + offset)
+        iostreamb.seek(mmap.address[0] + offset)
         return iostreamb.write('{replace}\0'.format(**kwgs).encode())
 
 
 def main():
     """Hack the virtual memory."""
     try:
-        with stdout_as_stderr():
-            kwgs = vars(parse_args())
+        kwgs = vars(parse_args())
     except SystemExit:
         return 1
     try:
-        maps = {entry.pathname: entry for entry in read_maps(**kwgs)}
-        heap = read_heap(maps['[heap]'], **kwgs)
-        offset = search_heap(heap, **kwgs)
-        write_heap(maps['[heap]'], offset, **kwgs)
+        mmap = {mmap.pathname: mmap for mmap in read_maps(**kwgs)}['[heap]']
+        heap = read_heap(mmap, **kwgs)
+        hpos = search_heap(heap, **kwgs)
+        write_heap(mmap, hpos, **kwgs)
     except (KeyError, OSError, ValueError) as exc:
         print(exc, file=sys.stderr)
         return 1
