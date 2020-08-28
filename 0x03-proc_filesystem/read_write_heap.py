@@ -78,6 +78,7 @@ def write_heap(mmap, offset, **kwgs):
 
 def main():
     """Hack the virtual memory."""
+    # pylint: disable=broad-except
     try:
         kwgs = vars(parse_args())
     except SystemExit:
@@ -87,7 +88,7 @@ def main():
         heap = read_heap(mmap, **kwgs)
         hpos = search_heap(heap, **kwgs)
         write_heap(mmap, hpos, **kwgs)
-    except (KeyError, OSError, ValueError) as exc:
+    except Exception as exc:
         print(exc, file=sys.stderr)
         return 1
     else:
