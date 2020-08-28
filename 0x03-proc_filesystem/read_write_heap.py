@@ -89,7 +89,7 @@ def main():
         hpos = search_heap(heap, **kwgs)
         write_heap(mmap, hpos, **kwgs)
     except Exception as exc:
-        print(exc, file=sys.stderr)
+        print(exc)
         return 1
     else:
         return 0
