@@ -5,6 +5,9 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "hreadelf.h"
+
+
 /**
  * _close - close a file descriptor and print an error message upon failure
  * @fd: the file descriptor to close
@@ -16,6 +19,7 @@ void _close(int fd)
 	write(STDERR_FILENO, "Error: Can't close fd\n", 22);
 	exit(98);
 }
+
 
 /**
  * _read - read from a file and print an error message upon failure
@@ -31,6 +35,7 @@ void _read(int fd, char *buf, size_t count)
 	_close(fd);
 	exit(98);
 }
+
 
 /**
  * elf_magic - print ELF magic
@@ -51,6 +56,7 @@ void elf_magic(const unsigned char *buffer)
 	for (i = 0; i < 16; ++i)
 		printf("%02x%c", buffer[i], i < 15 ? ' ' : '\n');
 }
+
 
 /**
  * elf_class - print ELF class
@@ -75,6 +81,7 @@ size_t elf_class(const unsigned char *buffer)
 	printf("<unknown: %x>\n", buffer[EI_CLASS]);
 	return (32);
 }
+
 
 /**
  * elf_data - print ELF data
@@ -114,6 +121,7 @@ void elf_version(const unsigned char *buffer)
 		printf("\n");
 }
 
+
 /**
  * elf_osabi - print ELF OS/ABI
  * @buffer: the ELF header
@@ -150,6 +158,7 @@ void elf_osabi(const unsigned char *buffer)
 		printf("<unknown: %x>\n", buffer[EI_OSABI]);
 }
 
+
 /**
  * elf_abivers - print ELF ABI version
  * @buffer: the ELF header
@@ -158,6 +167,7 @@ void elf_abivers(const unsigned char *buffer)
 {
 	printf("  %-34s %u\n", "ABI Version:", buffer[EI_ABIVERSION]);
 }
+
 
 /**
  * elf_type - print ELF type
@@ -191,6 +201,7 @@ void elf_type(const unsigned char *buffer, int big_endian)
 	else
 		printf("<unknown: %x>\n", type);
 }
+
 
 /**
  * elf_entry - print entry point address
@@ -229,6 +240,7 @@ void elf_entry(const unsigned char *buffer, size_t bit_mode, int big_endian)
 
 	printf("\n");
 }
+
 
 /**
  * main - copy a file's contents to another file
