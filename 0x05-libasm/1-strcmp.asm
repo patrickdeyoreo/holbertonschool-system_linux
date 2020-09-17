@@ -48,7 +48,7 @@ asm_strcmp_greater:
 	mov eax, 1h		; return 1
 
 	jmp asm_strcmp_end	; jump to end
-	
+
 asm_strcmp_end:
 
 	pop rdx		; restore @rdx
