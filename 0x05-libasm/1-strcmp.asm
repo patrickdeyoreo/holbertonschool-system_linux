@@ -1,5 +1,5 @@
 BITS 64
-	global asm_strcmp	; export 'asm_strlen' function
+	global asm_strcmp	; export 'asm_strcmp' function
 
 	section .text
 
