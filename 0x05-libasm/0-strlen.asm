@@ -16,6 +16,7 @@ asm_strlen:
 	mov rbp, rsp	; create new frame
 
 	push rsi	; save @rsi
+	push rdx	; save @rdx
 
 	mov rsi, 0h	; copy 0 into @rsi
 
@@ -31,6 +32,7 @@ asm_strlen_end:
 
 	mov rax, rsi	; return the value stored in @rsi
 
+	pop rdx		; restore @rdx
 	pop rsi		; restore @rsi
 
 			; the following two lines are equivalent to LEAVE
