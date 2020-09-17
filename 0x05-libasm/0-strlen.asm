@@ -40,3 +40,5 @@ asm_strlen_end:
 	pop rbp		; restore frame pointer
 
 	ret		; pop @rip
+
+; vi: set noet ft=nasm sts=0 sw=8 ts=8 :
