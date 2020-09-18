@@ -16,9 +16,21 @@
  */
 int main(void)
 {
+    printf("strncmp: %d, asm_strncmp: %d\n",
+		strncmp(S1, S3, 1), asm_strncmp(S1, S3, 1));
     assert(strncmp(S1, S3, 1) == asm_strncmp(S1, S3, 1));
+    printf("strncmp: %d, asm_strncmp: %d\n",
+		strncmp(S1, S3, 11), asm_strncmp(S1, S3, 11));
     assert(strncmp(S1, S3, 11) == asm_strncmp(S1, S3, 11));
+    printf("strncmp: %d, asm_strncmp: %d\n",
+		strncmp(S1, S3, 15), asm_strncmp(S1, S3, 15));
     assert(strncmp(S1, S3, 15) == asm_strncmp(S1, S3, 15));
+    printf("strncmp: %d, asm_strncmp: %d\n",
+		strncmp(S1, S2, 0), asm_strncmp(S1, S2, 0));
+    assert(strncmp(S1, S2, 0) == asm_strncmp(S1, S2, 0));
+    printf("strncmp: %d, asm_strncmp: %d\n",
+		strncmp(S1, S2, 1), asm_strncmp(S1, S2, 1));
+    assert(strncmp(S1, S2, 1) == asm_strncmp(S1, S2, 1));
 
     printf("All good!\n");
     return (EXIT_SUCCESS);

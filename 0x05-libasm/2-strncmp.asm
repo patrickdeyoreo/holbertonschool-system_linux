@@ -23,36 +23,36 @@ asm_strncmp:
 asm_strncmp_loop:
 
 	cmp rdx, 0h		; compare @rdx with 0
-	je asm_strncmp_equal	; jump to "equal" if @rdx is equal to 0
+	je asm_strncmp_eq	; jump to "eq" if @rdx is equal to 0
 
 	mov cl,	[rdi]		; copy the byte at @rdi into @cl
 	mov ch,	[rsi]		; copy the byte at @rsi into @ch
 
 	cmp cl,	ch		; compare @cl with @ch
-	jl asm_strncmp_less	; jump to "less" if @cl is less than @ch
-	jg asm_strncmp_greater	; jump to "greater" if @cl is greater than @ch
+	jl asm_strncmp_lt	; jump to "lt" if @cl is less than @ch
+	jg asm_strncmp_gt	; jump to "gt" if @cl is greater than @ch
 
 	cmp cl,	0h		; compare @cl with 0
-	je asm_strncmp_equal	; jump to "equal" if @cl is equal to 0
+	je asm_strncmp_eq	; jump to "eq" if @cl is equal to 0
 
 	inc rdi			; increment @rdi
 	inc rsi			; increment @rsi
 	dec rdx			; decrement @rdx
 	jmp asm_strncmp_loop	; jump to the beginning of the loop
 
-asm_strncmp_less:
+asm_strncmp_lt:
 
 	mov eax, -1h		; return -1
 
 	jmp asm_strncmp_end	; jump to "end"
 
-asm_strncmp_greater:
+asm_strncmp_gt:
 
 	mov eax, 1h		; return 1
 
 	jmp asm_strncmp_end	; jump to "end"
 
-asm_strncmp_equal:
+asm_strncmp_eq:
 
 	mov eax, 0h		; return 0
 

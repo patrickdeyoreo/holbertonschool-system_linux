@@ -17,8 +17,14 @@
  */
 int main(void)
 {
+    printf("strchr: %p, asm_strchr: %p\n",
+		(void *) strchr(S1, C1), (void *) asm_strchr(S1, C1));
     assert(strchr(S1, C1) == asm_strchr(S1, C1));
+    printf("strchr: %p, asm_strchr: %p\n",
+		(void *) strchr(S1, C2), (void *) asm_strchr(S1, C2));
     assert(strchr(S1, C2) == asm_strchr(S1, C2));
+    printf("strchr: %p, asm_strchr: %p\n",
+		(void *) strchr(S1, C3), (void *) asm_strchr(S1, C3));
     assert(strchr(S1, C3) == asm_strchr(S1, C3));
 
     printf("All good!\n");

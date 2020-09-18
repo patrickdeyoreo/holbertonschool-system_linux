@@ -25,29 +25,29 @@ asm_strcmp_loop:
 	mov dh,	[rsi]		; copy the byte at @rsi into @dh
 
 	cmp dl,	dh		; compare @dl with @dh
-	jl asm_strcmp_less	; jump to "less" if @dl is less than @dh
-	jg asm_strcmp_greater	; jump to "greater" if @dl is greater than @dh
+	jl asm_strcmp_lt	; jump to "lt" if @dl is less than @dh
+	jg asm_strcmp_gt	; jump to "gt" if @dl is greater than @dh
 
 	cmp dl,	0h		; compare @dl with 0
-	je asm_strcmp_equal	; jump to "equal" if @dl is equal to 0
+	je asm_strcmp_eq	; jump to "eq" if @dl is equal to 0
 
 	inc rdi			; increment @rdi
 	inc rsi			; increment @rsi
 	jmp asm_strcmp_loop	; jump to the beginning of the loop
 
-asm_strcmp_less:
+asm_strcmp_lt:
 
 	mov eax, -1h		; return -1
 
 	jmp asm_strcmp_end	; jump to "end"
 
-asm_strcmp_greater:
+asm_strcmp_gt:
 
 	mov eax, 1h		; return 1
 
 	jmp asm_strcmp_end	; jump to "end"
 
-asm_strcmp_equal:
+asm_strcmp_eq:
 
 	mov eax, 0h		; return 0
 
