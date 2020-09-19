@@ -21,7 +21,7 @@ asm_putc:
 	push rdx		; save @rdx
 
 	sub rsp, 1		; increase the size of the stack by 1 byte
-	mov byte [rsp], dil	; store @c on the stack
+	mov [rsp], dil		; store @c on the stack
 
 asm_putc_syscall:
 
