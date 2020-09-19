@@ -17,17 +17,17 @@ asm_memcpy:
 	push rbp	; save frame pointer
 	mov rbp, rsp	; create new frame
 
-	push rcx	; save @rcx
-
 	mov rax, rdi	; copy @rdi into @rax
+
+	push rcx	; save @rcx
 
 asm_memcpy_loop:
 
-	cmp rdx, 0h		; compare @rdx with 0
-	je asm_memcpy_end	; jump to "eq" if @rdx is equal to 0
+	cmp rdx, 0h		; compare 0 with @rdx
+	je asm_memcpy_end	; jump to "end" if @rdx is equal to 0
 
-	mov cl,	[rdi]		; copy the byte at @rdi into @cl
-	mov [rsi], cl		; copy the byte at @rsi into @ch
+	mov cl,	[rsi]		; copy the byte at @rsi into @cl
+	mov [rdi], cl		; copy @cl into the byte at @rdi
 
 	inc rdi			; increment @rdi
 	inc rsi			; increment @rsi
