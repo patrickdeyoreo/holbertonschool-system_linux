@@ -28,7 +28,7 @@ asm_putc_syscall:
 	mov rax, 1		; write system call
 	mov rdi, 1		; stdout fileno
 	mov rdx, 1		; number of bytes to write
-	mov rsi, rsp		; pointer to byte to write 
+	mov rsi, rsp		; pointer to byte to write
 
 	syscall			; trap to kernel
 
