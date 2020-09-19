@@ -18,13 +18,13 @@ asm_strchr:
 
 asm_strchr_loop:
 
-	cmp byte [rdi], sil	; compare @dl with 0
-	je asm_strchr_end	; jump to "end" if @dl is equal to 0
+	cmp byte [rdi], sil	; compare the byte at @rdi with @sil
+	je asm_strchr_end	; jump to "end" if the byte at @rdi is equal to @sil
 
-	cmp byte [rdi], 0h	; compare @dl with 0
-	je asm_strchr_nomatch	; jump to "end" if @dl is equal to 0
+	cmp byte [rdi], 0h	; compare the byte at @rdi with 0
+	je asm_strchr_nomatch	; jump to "nomatch" if the byte at @rdi is equal to 0
 
-	inc rdi			; increment offset
+	inc rdi			; increment @rdi
 	jmp asm_strchr_loop	; jump to the beginning of the loop
 
 asm_strchr_nomatch:
