@@ -15,11 +15,6 @@ asm_putc:
 	push rbp		; save frame pointer
 	mov rbp, rsp		; create new frame
 
-	push rax		; save @rax
-	push rdi		; save @rdi
-	push rsi		; save @rsi
-	push rdx		; save @rdx
-
 	sub rsp, 1		; increase the size of the stack by 1 byte
 	mov [rsp], dil		; store @c on the stack
 
@@ -33,10 +28,6 @@ asm_putc:
 asm_putc_end:
 
 	add rsp, 1		; decrease the size of the stack by 1 byte
-
-	pop rdx			; restore @rdx
-	pop rsi			; restore @rsi
-	pop rdi			; restore @rdi
 
 	mov rsp, rbp		; restore stack pointer
 	pop rbp			; restore frame pointer
