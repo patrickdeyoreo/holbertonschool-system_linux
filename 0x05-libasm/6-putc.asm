@@ -23,8 +23,6 @@ asm_putc:
 	sub rsp, 1		; increase the size of the stack by 1 byte
 	mov [rsp], dil		; store @c on the stack
 
-asm_putc_syscall:
-
 	mov rax, 1		; write system call
 	mov rdi, 1		; stdout fileno
 	mov rdx, 1		; number of bytes to write
