@@ -9,8 +9,8 @@ BITS 64
 	; rdi <- s
 	; rsi <- accept
 	;
-	; Return: the number of bytes in the initial segment of s which consist
-	; only of bytes from accept
+	; Return: the length of the initial segment of s which consists
+	; entirely of bytes in accept
 
 asm_strspn:
 
