@@ -1,5 +1,5 @@
 BITS 64
-	global asm_strstr	; export 'asm_strstr' function
+	global asm_strstr		; export 'asm_strstr' function
 
 	section .text
 
