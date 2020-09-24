@@ -20,22 +20,6 @@ asm_strstr:
 
 	sub rsp, 16			; increase the size of the stack by 16 bytes
 
-asm_strstr_loop:
-
-	mov dl, [rdi]			; copy the byte at @rdi into @dl
-
-	cmp dl, [rsi]			; compare the byte at @rsi with @dl
-	je asm_strstr_match		; jump to "match" if @dl is equal to the byte at @rsi
-
-	cmp dl, 0			; compare 0 with @dl
-	je asm_strstr_end		; jump to "end" if @dl is equal to 0
-
-asm_strstr_continue:
-
-	inc rdi				; increment @rdi
-
-	jmp asm_strstr_loop		; jump to the beginning of the loop
-
 asm_strstr_match:
 
 	mov [rsp - 8], rdi		; save @haystack on the stack
@@ -69,6 +53,24 @@ asm_strstr_match_break:
 
 	cmp byte [rdi], 0		; compare 0 with the byte at @rdi
 	jne asm_strstr_continue		; jump to "continue"
+
+	jmp asm_strstr_end		; jump to "end"
+
+asm_strstr_loop:
+
+	mov dl, [rdi]			; copy the byte at @rdi into @dl
+
+	cmp dl, [rsi]			; compare the byte at @rsi with @dl
+	je asm_strstr_match		; jump to "match" if @dl is equal to the byte at @rsi
+
+	cmp dl, 0			; compare 0 with @dl
+	je asm_strstr_end		; jump to "end" if @dl is equal to 0
+
+asm_strstr_continue:
+
+	inc rdi				; increment @rdi
+
+	jmp asm_strstr_loop		; jump to the beginning of the loop
 
 asm_strstr_end:
 
