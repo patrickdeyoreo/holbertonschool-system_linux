@@ -16,5 +16,7 @@ static void sigint_handler(int signum)
  */
 int handle_signal(void)
 {
-	return (signal(SIGINT, sigint_handler) == SIG_ERR ? -1 : 0);
+	if (signal(SIGINT, sigint_handler) == SIG_ERR)
+	   return (-1);
+	return (0);
 }

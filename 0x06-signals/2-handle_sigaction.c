@@ -1,4 +1,5 @@
 #include "signals.h"
+
 /**
  * sigint_handler - print a message upon receipt of SIGINT
  * @signum: signal number
@@ -22,5 +23,7 @@ int handle_sigaction(void)
 	sigint_action.sa_flags = 0;
 	sigemptyset(&sigint_action.sa_mask);
 
-	return (sigaction(SIGINT, &sigint_action, NULL) < 0 ? -1 : 0);
+	if (sigaction(SIGINT, &sigint_action, NULL) < 0)
+	   return (-1);
+	return (0);
 }
