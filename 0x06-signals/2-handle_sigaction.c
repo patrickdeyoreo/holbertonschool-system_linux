@@ -23,8 +23,7 @@ int handle_sigaction(void)
 	sigint_action.sa_flags = 0;
 	sigemptyset(&sigint_action.sa_mask);
 
-	errno = 0;
-	if (sigaction(SIGINT, &sigint_action, NULL) < 0 && errno != 0)
+	if (sigaction(SIGINT, &sigint_action, NULL) < 0)
 		return (-1);
 	return (0);
 }
