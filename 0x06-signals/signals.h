@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef struct sigaction sigaction_t;
 typedef void (*sighandler_t)(int);
 
 int handle_signal(void);
