@@ -24,6 +24,6 @@ int handle_sigaction(void)
 	sigemptyset(&sigint_action.sa_mask);
 
 	if (sigaction(SIGINT, &sigint_action, NULL) < 0)
-	   return (-1);
+		return (-1);
 	return (0);
 }
