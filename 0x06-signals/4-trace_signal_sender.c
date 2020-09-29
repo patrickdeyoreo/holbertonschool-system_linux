@@ -43,7 +43,6 @@ int trace_signal_sender(void)
 {
 	sigaction_t sigquit_action;
 
-	sigquit_action.sa_handler = NULL;
 	sigquit_action.sa_sigaction = sigquit_sigaction;
 	sigquit_action.sa_flags = SA_SIGINFO;
 	sigemptyset(&sigquit_action.sa_mask);
