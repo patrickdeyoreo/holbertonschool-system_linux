@@ -9,11 +9,14 @@
  */
 int main(int argc, char **argv)
 {
+	long int signum = strtol(argv[1], NULL, 10);
+
 	if (argc != 2)
 	{
 		printf("Usage: %s <signum>\n", argv[0]);
 		return (EXIT_FAILURE);
 	}
-	printf("%s\n", strsignal(strtol(argv[1], NULL, 10)));
+	signum = strtol(argv[1], NULL, 10);
+	printf("%ld: %s\n", signum, strsignal(signum));
 	return (EXIT_SUCCESS);
 }
