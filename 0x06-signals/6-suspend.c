@@ -32,7 +32,8 @@ static void sigint_handler(int signum)
 /**
  * main - suspend until receipt of a SIGINT
  *
- * Return: always 1
+ * Return: Upon failure to set a signal handler, return EXIT_FAILURE.
+ * Otherwise, return EXIT_SUCCESS.
  */
 int main(void)
 {

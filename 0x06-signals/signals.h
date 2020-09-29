@@ -1,9 +1,12 @@
 #ifndef _SIGNALS_H_
 #define _SIGNALS_H_
 
+#include <errno.h>
+#include <limits.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 typedef struct sigaction sigaction_t;
