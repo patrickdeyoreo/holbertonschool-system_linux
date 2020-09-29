@@ -37,6 +37,6 @@ void all_in_one(void)
 	default_action.sa_flags = SA_SIGINFO;
 	sigemptyset(&default_action.sa_mask);
 
-	while (signum++ < NSIG)
+	while (++signum < NSIG)
 		sigaction(signum, &default_action, NULL);
 }
