@@ -4,7 +4,7 @@
  * signals_block - block a given set of signals from being delivered
  * @signals: zero-terminated array of signals to block
  *
- * Return: -1 on error, otherwise 0
+ * Return: -1 upon error, otherwise 0
  */
 int signals_block(int *signals)
 {

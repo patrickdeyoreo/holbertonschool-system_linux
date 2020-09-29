@@ -11,15 +11,16 @@ int sigset_init(sigset_t *set, int *signals)
 {
 	sigset_t tmp;
 
-	if (set && signals)
+	if (!set || !signals)
+		return (-1);
+	if (sigemptyset(&tmp) == -1)
+		return (-1);
+	while (*signals)
 	{
-		for (sigemptyset(&tmp); *signals; signals += 1)
-		{
-			if (sigaddset(&tmp, *signals) == -1)
-				return (-1);
-		}
-		*set = tmp;
-		return (0);
+		if (sigaddset(&tmp, *signals) == -1)
+			return (-1);
+		signals += 1;
 	}
-	return (-1);
+	*set = tmp;
+	return (0);
 }
