@@ -5,9 +5,9 @@
 #ifndef NSIG
 #ifndef _NSIG
 #ifndef CHAR_BIT
-#define CHAR_BIT sizeof(char) * 8
+#define CHAR_BIT (sizeof(char) * 8)
 #endif
-#define _NSIG (CHAR_BIT * sizeof(sigset_t))
+#define _NSIG (sizeof(sigset_t) * CHAR_BIT)
 #endif
 #define NSIG _NSIG
 #endif
