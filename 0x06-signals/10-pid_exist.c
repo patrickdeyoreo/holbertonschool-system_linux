@@ -1,4 +1,4 @@
-#include "signals.h"
+#include <signal.h>
 
 /**
  * pid_exist - check if a process with the given PID exists
