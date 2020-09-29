@@ -19,13 +19,17 @@ static void putint(int n)
 }
 
 /**
- * sigint_handler - print a message upon receipt of SIGINT
- * @signum: signal number
+ * sigint_sigaction - print a message upon receipt of SIGINT
+ * @sig: signal number
+ * @info: pointer to further information about the signal
+ * @ucontext: pointer to signal context information
  */
-static void sigint_handler(int signum)
+static void sigint_sigaction(int sig, siginfo_t *info, void *ucontext)
 {
+	(void) info;
+	(void) ucontext;
 	putstr("Caught ");
-	putint(signum);
+	putint(sig);
 	putstr("\n");
 }
 
@@ -38,9 +42,9 @@ int main(void)
 {
 	sigaction_t sigint_action;
 
-	sigint_action.sa_handler = sigint_handler;
-	sigint_action.sa_sigaction = NULL;
-	sigint_action.sa_flags = 0;
+	sigint_action.sa_handler = NULL;
+	sigint_action.sa_sigaction = sigint_sigaction;
+	sigint_action.sa_flags = SA_SIGINFO;
 	sigemptyset(&sigint_action.sa_mask);
 
 	if (sigaction(SIGINT, &sigint_action, NULL) < 0)
