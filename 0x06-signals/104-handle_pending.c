@@ -12,7 +12,7 @@
 
 /**
  * handle_pending - set up a handler for all pending signals
- * handler - pointer to a signal handler
+ * @handler - pointer to a signal handler
  *
  * Return: -1 upon error, otherwise 0
  */
