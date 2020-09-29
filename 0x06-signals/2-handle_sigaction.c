@@ -39,6 +39,7 @@ int handle_sigaction(void)
 	sigaction_t sigint_action;
 
 	sigint_action.sa_handler = sigint_handler;
+	sigint_action.sa_handler = NULL;
 	sigint_action.sa_flags = 0;
 	sigemptyset(&sigint_action.sa_mask);
 

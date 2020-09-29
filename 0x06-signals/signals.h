@@ -4,6 +4,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 typedef struct sigaction sigaction_t;
 typedef void (*sighandler_t)(int);
