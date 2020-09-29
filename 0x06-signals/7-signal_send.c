@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 	pid = strtol(argv[1], NULL, 10);
 
 	if (pid <= 0)
-	   errno = ERANGE;
+		errno = ERANGE;
 
 	if (errno)
 	{
