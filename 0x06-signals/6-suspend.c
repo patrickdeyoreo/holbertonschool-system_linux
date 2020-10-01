@@ -6,6 +6,7 @@
  */
 static void sigint_handler(int signum)
 {
+	fflush(stdout);
 	printf("Caught %d\n", signum);
 }
 
