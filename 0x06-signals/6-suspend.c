@@ -28,5 +28,6 @@ int main(void)
 		return (EXIT_FAILURE);
 
 	pause();
+	write(STDOUT_FILENO, "Signal received\n", 16);
 	return (EXIT_SUCCESS);
 }
