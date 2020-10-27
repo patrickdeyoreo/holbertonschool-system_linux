@@ -1,15 +1,11 @@
 #include "hreadelf.h"
 
 /**
- * elf_version - print ELF version
- * @buffer: the ELF header
+ * elf_version - print ELF identifier version
+ *
+ * @e_version: ELF header identifier bits
  */
-void elf_version(const unsigned char *buffer)
+void elf_version(Elf64_Word e_version)
 {
-	printf("  %-34s %u", "Version:", buffer[EI_VERSION]);
-
-	if (buffer[EI_VERSION] == EV_CURRENT)
-		printf(" (current)\n");
-	else
-		printf("\n");
+	printf("  %-34s 0x%x\n", "Version:", e_version);
 }

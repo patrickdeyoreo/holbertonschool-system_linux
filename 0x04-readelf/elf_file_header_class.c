@@ -2,24 +2,23 @@
 
 /**
  * elf_class - print ELF class
- * @buffer: the ELF header
  *
- * Return: bit mode (32 or 64)
+ * @e_ident: ELF header identifier bits
  */
-size_t elf_class(const unsigned char *buffer)
+void elf_class(unsigned char (*e_ident)[EI_NIDENT])
 {
 	printf("  %-34s ", "Class:");
 
-	if (buffer[EI_CLASS] == ELFCLASS64)
+	switch ((*e_ident)[EI_CLASS])
 	{
-		printf("ELF64\n");
-		return (64);
-	}
-	if (buffer[EI_CLASS] == ELFCLASS32)
-	{
+	case ELFCLASS32:
 		printf("ELF32\n");
-		return (32);
+		break;
+	case ELFCLASS64:
+		printf("ELF64\n");
+		break;
+	default:
+		printf("<unknown: %x>\n", (*e_ident)[EI_CLASS]);
+		break;
 	}
-	printf("<unknown: %x>\n", buffer[EI_CLASS]);
-	return (32);
 }

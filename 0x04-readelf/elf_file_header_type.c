@@ -2,33 +2,27 @@
 
 /**
  * elf_type - print ELF type
- * @buffer: the ELF header
- * @big_endian: endianness (big endian if non-zero)
+ *
+ * @e_type: the ELF type
  */
-void elf_type(const unsigned char *buffer, int big_endian)
+void elf_type(Elf64_Half e_type)
 {
-	char *type_table[5] = {
+	const char *type_table[ET_NUM] = {
 		"NONE (No file type)",
 		"REL (Relocatable file)",
 		"EXEC (Executable file)",
 		"DYN (Shared object file)",
 		"CORE (Core file)"
 	};
-	unsigned int type;
 
 	printf("  %-34s ", "Type:");
 
-	if (big_endian)
-		type = 0x100 * buffer[16] + buffer[17];
+	if (e_type < ET_NUM)
+		printf("%s\n", type_table[e_type]);
+	else if (e_type >= ET_LOOS && e_type <= ET_HIOS)
+		printf("OS Specific: (%4x)\n", e_type);
+	else if (e_type >= ET_LOPROC)
+		printf("Processor Specific: (%4x)\n", e_type);
 	else
-		type = 0x100 * buffer[17] + buffer[16];
-
-	if (type < 5)
-		printf("%s\n", type_table[type]);
-	else if (type >= ET_LOOS && type <= ET_HIOS)
-		printf("OS Specific: (%4x)\n", type);
-	else if (type >= ET_LOPROC && type <= ET_HIPROC)
-		printf("Processor Specific: (%4x)\n", type);
-	else
-		printf("<unknown: %x>\n", type);
+		printf("<unknown: %x>\n", e_type);
 }

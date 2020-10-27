@@ -2,20 +2,17 @@
 
 /**
  * elf_magic - print ELF magic
- * @buffer: the ELF header
+ *
+ * @e_ident: ELF header identifier bits
  */
-void elf_magic(const unsigned char *buffer)
+void elf_magic(unsigned char (*e_ident)[EI_NIDENT])
 {
-	unsigned int i;
-
-	if (strncmp((const char *) buffer, ELFMAG, 4))
-	{
-		write(STDERR_FILENO, "Error: Not an ELF file\n", 23);
-		exit(1);
-	}
+	unsigned int i = 0;
 
 	printf("ELF Header:\n  Magic:   ");
-
-	for (i = 0; i < 16; ++i)
-		printf("%02x%c", buffer[i], i < 15 ? ' ' : '\n');
+	while (i < EI_NIDENT)
+	{
+		printf("%02x", (*e_ident)[i++]);
+		putchar(i < 16 ? ' ' : '\n');
+	}
 }

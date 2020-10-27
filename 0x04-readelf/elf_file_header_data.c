@@ -2,24 +2,23 @@
 
 /**
  * elf_data - print ELF data
- * @buffer: the ELF header
  *
- * Return: 1 if big endian, otherwise 0
+ * @e_ident: ELF header identifier bits
  */
-int elf_data(const unsigned char *buffer)
+void elf_data(unsigned char (*e_ident)[EI_NIDENT])
 {
 	printf("  %-34s ", "Data:");
 
-	if (buffer[EI_DATA] == ELFDATA2MSB)
+	switch ((*e_ident)[EI_DATA])
 	{
-		printf("2's complement, big endian\n");
-		return (1);
-	}
-	if (buffer[EI_DATA] == ELFDATA2LSB)
-	{
+	case ELFDATA2LSB:
 		printf("2's complement, little endian\n");
-		return (0);
+		break;
+	case  ELFDATA2MSB:
+		printf("2's complement, big endian\n");
+		break;
+	default:
+		printf("Invalid data encoding\n");
+		break;
 	}
-	printf("Invalid data encoding\n");
-	return (0);
 }

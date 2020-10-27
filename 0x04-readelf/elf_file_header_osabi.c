@@ -2,11 +2,12 @@
 
 /**
  * elf_osabi - print ELF OS/ABI
- * @buffer: the ELF header
+ *
+ * @e_ident: ELF header identifier bits
  */
-void elf_osabi(const unsigned char *buffer)
+void elf_osabi(unsigned char (*e_ident)[EI_NIDENT])
 {
-	const char *os_table[19] = {
+	const char *os_table[] = {
 		"UNIX - System V",
 		"UNIX - HP-UX",
 		"UNIX - NetBSD",
@@ -30,8 +31,8 @@ void elf_osabi(const unsigned char *buffer)
 
 	printf("  %-34s ", "OS/ABI:");
 
-	if (buffer[EI_OSABI] < 19)
-		printf("%s\n", os_table[(unsigned int) buffer[EI_OSABI]]);
+	if ((*e_ident)[EI_OSABI] < sizeof(os_table) / sizeof(*os_table))
+		printf("%s\n", os_table[(*e_ident)[EI_OSABI]]);
 	else
-		printf("<unknown: %x>\n", buffer[EI_OSABI]);
+		printf("<unknown: %x>\n", (*e_ident)[EI_OSABI]);
 }
