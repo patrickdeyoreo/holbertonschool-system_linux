@@ -1,5 +1,4 @@
 #include <endian.h>
-#include <libgen.h>
 
 #include "hreadelf.h"
 
@@ -101,8 +100,7 @@ static int readelf_32(char **argv)
 
 	if (!istream || fread(&ehdr, sizeof(ehdr), 1, istream) != 1)
 	{
-		fprintf(stderr, "%s: Error: Can't read from file\n",
-			basename(argv[0]));
+		fprintf(stderr, "%s: Error: Can't read from file\n", *argv);
 		return (1);
 	}
 	fclose(istream);
@@ -137,8 +135,7 @@ static int readelf_64(char **argv)
 
 	if (!istream || fread(&ehdr, sizeof(ehdr), 1, istream) != 1)
 	{
-		fprintf(stderr, "%s: Error: Can't read from file\n",
-			basename(argv[0]));
+		fprintf(stderr, "%s: Error: Can't read from file\n", *argv);
 		return (1);
 	}
 	fclose(istream);
@@ -174,22 +171,19 @@ int main(int argc, char **argv)
 
 	if (argc != 2)
 	{
-		fprintf(stderr, "Usage: %s elf_filename\n",
-			basename(argv[0]));
+		fprintf(stderr, "Usage: %s elf_filename\n", *argv);
 		return (1);
 	}
 	istream = fopen(argv[1], "r");
 	if (!istream || fread(e_ident, 1, EI_NIDENT, istream) != EI_NIDENT)
 	{
-		fprintf(stderr, "%s: Error: Can't read from file\n",
-			basename(argv[0]));
+		fprintf(stderr, "%s: Error: Can't read from file\n", *argv);
 		return (1);
 	}
 	fclose(istream);
 	if (memcmp(e_ident, ELFMAG, SELFMAG))
 	{
-		fprintf(stderr, "%s: Error: Not an ELF file\n",
-			basename(argv[0]));
+		fprintf(stderr, "%s: Error: Not an ELF file\n", *argv);
 		return (1);
 	}
 	elf_ident(&e_ident);
@@ -200,8 +194,7 @@ int main(int argc, char **argv)
 	case ELFCLASS64:
 		return (readelf_64(argv));
 	default:
-		fprintf(stderr, "%s: Error: Unknown ELF class %x at byte %d\n",
-			basename(argv[0]), e_ident[EI_CLASS], EI_CLASS);
+		fprintf(stderr, "%s: Error: Unknown ELF class\n", *argv);
 		return (1);
 	}
 }
