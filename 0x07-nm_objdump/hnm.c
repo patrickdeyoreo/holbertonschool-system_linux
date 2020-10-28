@@ -3,8 +3,8 @@
 /**
  * hnm - list symbols from object files
  *
- * argc: argument count
- * argv: argument vector
+ * @argc: argument count
+ * @argv: argument vector
  *
  * Return: always 1
  */
@@ -16,8 +16,8 @@ int hnm(int argc __attribute__((unused)), char **argv __attribute__((unused)))
 /**
  * main - entry point
  *
- * argc: argument count
- * argv: argument vector
+ * @argc: argument count
+ * @argv: argument vector
  *
  * Return: always 1
  */

@@ -3,8 +3,8 @@
 /**
  * hobjdump - display information from object files
  *
- * argc: argument count
- * argv: argument vector
+ * @argc: argument count
+ * @argv: argument vector
  *
  * Return: always 1
  */
@@ -18,8 +18,8 @@ int hobjdump(int argc, char **argv)
 /**
  * main - entry point
  *
- * argc: argument count
- * argv: argument vector
+ * @argc: argument count
+ * @argv: argument vector
  *
  * Return: always 1
  */
