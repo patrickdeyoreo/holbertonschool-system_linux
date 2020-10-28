@@ -1,12 +1,9 @@
-#include <endian.h>
-
 #include "hreadelf.h"
 
 /**
  * readelf_32_etoh - convert 32-bit ELF header data to host byte order
  *
  * @ehdr: pointer to 32-bit elf header
- */
 static void readelf_32_etoh(Elf32_Ehdr *ehdr)
 {
 	switch (ehdr->e_ident[EI_DATA])
@@ -43,12 +40,12 @@ static void readelf_32_etoh(Elf32_Ehdr *ehdr)
 		break;
 	}
 }
+ */
 
 /**
  * readelf_64_etoh - convert 64-bit ELF header data to host byte order
  *
  * @ehdr: pointer to 64-bit elf header
- */
 static void readelf_64_etoh(Elf64_Ehdr *ehdr)
 {
 	switch (ehdr->e_ident[EI_DATA])
@@ -85,6 +82,7 @@ static void readelf_64_etoh(Elf64_Ehdr *ehdr)
 		break;
 	}
 }
+ */
 
 /**
  * readelf_32 - handle a 32-bit elf header
@@ -104,7 +102,6 @@ static int readelf_32(char **argv)
 		return (1);
 	}
 	fclose(istream);
-	readelf_32_etoh(&ehdr);
 	elf_type(ehdr.e_type);
 	elf_machine(ehdr.e_machine);
 	elf_version(ehdr.e_version);
@@ -139,7 +136,6 @@ static int readelf_64(char **argv)
 		return (1);
 	}
 	fclose(istream);
-	readelf_64_etoh(&ehdr);
 	elf_type(ehdr.e_type);
 	elf_machine(ehdr.e_machine);
 	elf_version(ehdr.e_version);
