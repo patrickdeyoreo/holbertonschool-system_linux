@@ -11,7 +11,7 @@
 #define E_MACHINE_TABLE {					\
 	"No machine",						\
 	"AT&T WE 32100",					\
-	"SUN SPARC",						\
+	"Sparc",						\
 	"Intel 80386",						\
 	"Motorola m68k family",					\
 	"Motorola m88k family",					\
