@@ -1,5 +1,5 @@
-#ifndef _ELF_ETOH_
-#define _ELF_ETOH_
+#ifndef _ETOH_
+#define _ETOH_
 
 #include <elf.h>
 #include <endian.h>
@@ -79,4 +79,4 @@ void lib32betoh(Elf32_Lib *lib);
 void lib64letoh(Elf64_Lib *lib);
 void lib64betoh(Elf64_Lib *lib);
 
-#endif /* _ELF_ETOH_ */
+#endif /* _ETOH_ */
