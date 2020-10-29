@@ -7,7 +7,7 @@
  */
 void elf_machine(Elf64_Half e_machine)
 {
-	const char *machine_table[EM_NUM] = E_MACHINE_TABLE;
+	const char *machine_table[] = E_MACHINE_TABLE;
 
 	printf("  %-34s ", "Machine:");
 
