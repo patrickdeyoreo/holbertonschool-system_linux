@@ -11,8 +11,6 @@ void elf_magic(unsigned char (*e_ident)[EI_NIDENT])
 
 	printf("ELF Header:\n  Magic:   ");
 	while (i < EI_NIDENT)
-	{
-		printf("%02x", (*e_ident)[i++]);
-		putchar(i < 16 ? ' ' : '\n');
-	}
+		printf("%02x ", (*e_ident)[i++]);
+	printf("\n");
 }
