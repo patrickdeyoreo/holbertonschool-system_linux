@@ -9,6 +9,11 @@ void vernaux64letoh(Elf64_Vernaux *vernaux)
 {
 	if (vernaux)
 	{
+		vernaux->vna_hash = le32toh(vernaux->vna_hash);
+		vernaux->vna_flags = le16toh(vernaux->vna_flags);
+		vernaux->vna_other = le16toh(vernaux->vna_other);
+		vernaux->vna_name = le32toh(vernaux->vna_name);
+		vernaux->vna_next = le32toh(vernaux->vna_next);
 	}
 }
 

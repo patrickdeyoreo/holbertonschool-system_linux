@@ -9,6 +9,8 @@ void verdaux32letoh(Elf32_Verdaux *verdaux)
 {
 	if (verdaux)
 	{
+		verdaux->vda_name = le32toh(verdaux->vda_name);
+		verdaux->vda_next = le32toh(verdaux->vda_next);
 	}
 }
 

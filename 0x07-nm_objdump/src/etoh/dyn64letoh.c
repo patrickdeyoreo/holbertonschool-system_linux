@@ -9,6 +9,8 @@ void dyn64letoh(Elf64_Dyn *dyn)
 {
 	if (dyn)
 	{
+		dyn->d_tag = le64toh(dyn->d_tag);
+		dyn->d_un.d_ptr = le64toh(dyn->d_un.d_ptr);
 	}
 }
 

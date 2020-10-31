@@ -9,6 +9,8 @@ void syminfo64letoh(Elf64_Syminfo *syminfo)
 {
 	if (syminfo)
 	{
+		syminfo->si_boundto = le16toh(syminfo->si_boundto);
+		syminfo->si_flags = le16toh(syminfo->si_flags);
 	}
 }
 

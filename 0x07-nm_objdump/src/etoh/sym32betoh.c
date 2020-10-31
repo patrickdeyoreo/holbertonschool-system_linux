@@ -9,6 +9,10 @@ void sym32betoh(Elf32_Sym *sym)
 {
 	if (sym)
 	{
+		sym->st_name = be32toh(sym->st_name);
+		sym->st_value = be32toh(sym->st_value);
+		sym->st_size = be32toh(sym->st_size);
+		sym->st_shndx = be16toh(sym->st_shndx);
 	}
 }
 

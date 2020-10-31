@@ -9,6 +9,8 @@ void dyn32letoh(Elf32_Dyn *dyn)
 {
 	if (dyn)
 	{
+		dyn->d_tag = le32toh(dyn->d_tag);
+		dyn->d_un.d_ptr = le32toh(dyn->d_un.d_ptr);
 	}
 }
 

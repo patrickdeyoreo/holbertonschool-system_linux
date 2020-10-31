@@ -9,6 +9,10 @@ void sym64letoh(Elf64_Sym *sym)
 {
 	if (sym)
 	{
+		sym->st_name = le32toh(sym->st_name);
+		sym->st_shndx = le16toh(sym->st_shndx);
+		sym->st_value = le64toh(sym->st_value);
+		sym->st_size = le64toh(sym->st_size);
 	}
 }
 

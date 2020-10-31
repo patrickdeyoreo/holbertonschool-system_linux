@@ -9,6 +9,8 @@ void syminfo32betoh(Elf32_Syminfo *syminfo)
 {
 	if (syminfo)
 	{
+		syminfo->si_boundto = be16toh(syminfo->si_boundto);
+		syminfo->si_flags = be16toh(syminfo->si_flags);
 	}
 }
 

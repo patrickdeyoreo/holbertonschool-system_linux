@@ -9,6 +9,8 @@ void rel64letoh(Elf64_Rel *rel)
 {
 	if (rel)
 	{
+		rel->r_offset = le64toh(rel->r_offset);
+		rel->r_info = le64toh(rel->r_info);
 	}
 }
 

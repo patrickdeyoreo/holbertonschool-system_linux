@@ -9,6 +9,9 @@ void rela32letoh(Elf32_Rela *rela)
 {
 	if (rela)
 	{
+		rela->r_offset = le32toh(rela->r_offset);
+		rela->r_info = le32toh(rela->r_info);
+		rela->r_addend = le32toh(rela->r_addend);
 	}
 }
 

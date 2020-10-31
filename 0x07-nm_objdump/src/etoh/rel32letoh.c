@@ -9,6 +9,8 @@ void rel32letoh(Elf32_Rel *rel)
 {
 	if (rel)
 	{
+		rel->r_offset = le32toh(rel->r_offset);
+		rel->r_info = le32toh(rel->r_info);
 	}
 }
 
