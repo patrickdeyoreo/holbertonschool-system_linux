@@ -1,16 +1,16 @@
 #include "../load.h"
 
 /**
- * ehdr32beload - load a 32-bit big-endian elf header
+ * ehdr32beload - load a 32-bit big-endian ELF header
  *
  * @filename: name of the input file
- * @ehdr: pointer to a 32-bit ehdr structure in which to write
+ * @ehdr: pointer to a 32-bit big-endian ELF header
  *
- * Return: 1 if an error occurs, otherwise 0
+ * Return: Upon error, return 1. Otherwise, return 0.
  */
 int ehdr32beload(const char *filename, Elf32_Ehdr *ehdr)
 {
-	FILE *istream = fopen(filename, "r");
+	FILE *istream = filename && ehdr ? fopen(filename, "r") : NULL;
 
 	if (!istream)
 	{
@@ -22,16 +22,7 @@ int ehdr32beload(const char *filename, Elf32_Ehdr *ehdr)
 		return (1);
 	}
 	fclose(istream);
-	switch (ehdr->e_ident[EI_DATA])
-	{
-	case ELFDATA2LSB:
-		ehdr32letoh(ehdr);
-		break;
-	case ELFDATA2MSB:
-		ehdr32betoh(ehdr);
-		break;
-	default:
-		return (1);
-	}
+	ehdr32betoh(ehdr);
 	return (0);
 }
+
