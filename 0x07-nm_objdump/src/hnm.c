@@ -9,11 +9,23 @@
  *
  * Return: 1 if an error occurs, otherwise 0
  */
-int hnm32(const char *filename)
+static int hnm32(const char *filename, unsigned char (*ident)[EI_NIDENT])
 {
+	int (*load)(const char *, Elf32_Ehdr *) = NULL;
 	Elf32_Ehdr ehdr;
 
-	if (ehdr32load(filename, &ehdr) == 1)
+	switch ((*ident)[EI_DATA])
+	{
+	case ELFDATA2LSB:
+		load = ehdr32leload;
+		break;
+	case ELFDATA2MSB:
+		load = ehdr32beload;
+		break;
+	default:
+		return (1);
+	}
+	if (load(filename, &ehdr) == 1)
 	{
 		return (1);
 	}
@@ -24,14 +36,27 @@ int hnm32(const char *filename)
  * hnm64 - list symbols from 64-bit object files
  *
  * @filename: name of the input file
+ * @ident: elf identifier bytes
  *
  * Return: 1 if an error occurs, otherwise 0
  */
-int hnm64(const char *filename)
+static int hnm64(const char *filename, unsigned char (*ident)[EI_NIDENT])
 {
+	int (*load)(const char *, Elf64_Ehdr *) = NULL;
 	Elf64_Ehdr ehdr;
 
-	if (ehdr64load(filename, &ehdr) == 1)
+	switch ((*ident)[EI_DATA])
+	{
+	case ELFDATA2LSB:
+		load = ehdr64leload;
+		break;
+	case ELFDATA2MSB:
+		load = ehdr64beload;
+		break;
+	default:
+		return (1);
+	}
+	if (load(filename, &ehdr) == 1)
 	{
 		return (1);
 	}
@@ -48,6 +73,7 @@ int hnm64(const char *filename)
 int hnm(const char *filename)
 {
 	unsigned char ident[EI_NIDENT] = {0};
+	int (*hnmxx)(const char *, unsigned char (*)[EI_NIDENT]) = NULL;
 	FILE *istream = fopen(filename, "r");
 
 	if (!istream)
@@ -67,12 +93,15 @@ int hnm(const char *filename)
 	switch (ident[EI_CLASS])
 	{
 	case ELFCLASS32:
-		return (hnm32(filename));
+		hnmxx = hnm32;
+		break;
 	case ELFCLASS64:
-		return (hnm64(filename));
+		hnmxx = hnm64;
+		break;
 	default:
 		return (1);
 	}
+	return (hnmxx(filename, &ident));
 }
 
 /**

@@ -1,7 +1,7 @@
 #include "../load.h"
 
 /**
- * ehdr32load - handle a 32-bit elf header
+ * ehdr32beload - load a 32-bit big-endian elf header
  *
  * @filename: name of the input file
  * @ehdr: pointer to a 32-bit ehdr structure in which to write

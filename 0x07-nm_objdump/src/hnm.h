@@ -9,7 +9,5 @@
 #include "load.h"
 
 int hnm(const char *filename);
-int hnm32(const char *filename);
-int hnm64(const char *filename);
 
 #endif /* _HNM_H_ */
