@@ -8,7 +8,7 @@
  *
  * Return: 1 if an error occurs, otherwise 0
  */
-int ehdr32load(const char *filename, Elf32_Ehdr *ehdr)
+int ehdr32beload(const char *filename, Elf32_Ehdr *ehdr)
 {
 	FILE *istream = fopen(filename, "r");
 

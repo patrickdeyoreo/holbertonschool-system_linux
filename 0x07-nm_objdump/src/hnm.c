@@ -6,6 +6,7 @@
  * hnm32 - list symbols from 32-bit object files
  *
  * @filename: name of the input file
+ * @ident: elf identifier bytes
  *
  * Return: 1 if an error occurs, otherwise 0
  */
@@ -110,7 +111,7 @@ int hnm(const char *filename)
  * @argc: argument count
  * @argv: argument vector
  *
- * Return: always 1
+ * Return: non-zero if an error occurs, otherwise 0
  */
 int main(int argc, char **argv)
 {
