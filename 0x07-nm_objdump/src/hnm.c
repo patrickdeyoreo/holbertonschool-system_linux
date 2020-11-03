@@ -12,21 +12,21 @@
  */
 static int hnm32(const char *filename, unsigned char (*ident)[EI_NIDENT])
 {
-	int (*load)(const char *, Elf32_Ehdr *) = NULL;
+	loadfn_t loadfntab[LOADFNTABSIZE] = {0};
 	Elf32_Ehdr ehdr;
 
 	switch ((*ident)[EI_DATA])
 	{
 	case ELFDATA2LSB:
-		load = ehdr32leload;
+		loadfntabinit32le(&loadfntab);
 		break;
 	case ELFDATA2MSB:
-		load = ehdr32beload;
+		loadfntabinit32be(&loadfntab);
 		break;
 	default:
 		return (1);
 	}
-	if (load(filename, &ehdr) == 1)
+	if (loadfntab[ehdrloadfntabidx](filename, &ehdr) != 0)
 	{
 		return (1);
 	}
@@ -43,21 +43,21 @@ static int hnm32(const char *filename, unsigned char (*ident)[EI_NIDENT])
  */
 static int hnm64(const char *filename, unsigned char (*ident)[EI_NIDENT])
 {
-	int (*load)(const char *, Elf64_Ehdr *) = NULL;
+	loadfn_t loadfntab[LOADFNTABSIZE] = {0};
 	Elf64_Ehdr ehdr;
 
 	switch ((*ident)[EI_DATA])
 	{
 	case ELFDATA2LSB:
-		load = ehdr64leload;
+		loadfntabinit64le(&loadfntab);
 		break;
 	case ELFDATA2MSB:
-		load = ehdr64beload;
+		loadfntabinit64be(&loadfntab);
 		break;
 	default:
 		return (1);
 	}
-	if (load(filename, &ehdr) == 1)
+	if (loadfntab[ehdrloadfntabidx](filename, &ehdr) != 0)
 	{
 		return (1);
 	}
@@ -74,8 +74,7 @@ static int hnm64(const char *filename, unsigned char (*ident)[EI_NIDENT])
 int hnm(const char *filename)
 {
 	unsigned char ident[EI_NIDENT] = {0};
-	int (*hnmxx)(const char *, unsigned char (*)[EI_NIDENT]) = NULL;
-	FILE *istream = fopen(filename, "r");
+	FILE *istream = filename ? fopen(filename, "r") : NULL;
 
 	if (!istream)
 	{
@@ -94,15 +93,12 @@ int hnm(const char *filename)
 	switch (ident[EI_CLASS])
 	{
 	case ELFCLASS32:
-		hnmxx = hnm32;
-		break;
+		return (hnm32(filename, &ident));
 	case ELFCLASS64:
-		hnmxx = hnm64;
-		break;
+		return (hnm64(filename, &ident));
 	default:
 		return (1);
 	}
-	return (hnmxx(filename, &ident));
 }
 
 /**

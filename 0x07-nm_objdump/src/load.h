@@ -6,6 +6,53 @@
 
 #include "etoh.h"
 
+#define LOADFNTABSIZE 15
+
+/**
+ * enum loadfntabidx_e - loadfntab index enum
+ *
+ * @ehdrloadfntabidx: ehdr loading function index
+ * @shdrloadfntabidx: shdr loading function index
+ * @symloadfntabidx: sym loading function index
+ * @syminfoloadfntabidx: syminfo loading function index
+ * @relloadfntabidx: rel loading function index
+ * @relaloadfntabidx: rela loading function index
+ * @phdrloadfntabidx: phdr loading function index
+ * @dynloadfntabidx: dyn loading function index
+ * @verdefloadfntabidx: verdef loading function index
+ * @verdauxloadfntabidx: verdaux loading function index
+ * @verneedloadfntabidx: verneed loading function index
+ * @vernauxloadfntabidx: vernaux loading function index
+ * @nhdrloadfntabidx: nhdr loading function index
+ * @moveloadfntabidx: move loading function index
+ * @libloadfntabidx: lib loading function index
+ */
+enum loadfntabidx_e
+{
+	ehdrloadfntabidx = 0,
+	shdrloadfntabidx,
+	symloadfntabidx,
+	syminfoloadfntabidx,
+	relloadfntabidx,
+	relaloadfntabidx,
+	phdrloadfntabidx,
+	dynloadfntabidx,
+	verdefloadfntabidx,
+	verdauxloadfntabidx,
+	verneedloadfntabidx,
+	vernauxloadfntabidx,
+	nhdrloadfntabidx,
+	moveloadfntabidx,
+	libloadfntabidx
+};
+
+typedef int (*loadfn_t)(const char *, void *);
+
+void loadfntabinit32le(loadfn_t (*loadfntab)[LOADFNTABSIZE]);
+void loadfntabinit32be(loadfn_t (*loadfntab)[LOADFNTABSIZE]);
+void loadfntabinit64le(loadfn_t (*loadfntab)[LOADFNTABSIZE]);
+void loadfntabinit64be(loadfn_t (*loadfntab)[LOADFNTABSIZE]);
+
 int ehdr32leload(const char *filename, Elf32_Ehdr *ehdr);
 int ehdr32beload(const char *filename, Elf32_Ehdr *ehdr);
 int ehdr64leload(const char *filename, Elf64_Ehdr *ehdr);
