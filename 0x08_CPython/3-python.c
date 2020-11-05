@@ -11,11 +11,16 @@
  */
 void print_python_float(PyObject *p)
 {
+	char *s = NULL;
+
 	setbuf(stdout, NULL);
 	if (PyFloat_Check(p))
 	{
 		printf("[.] float object info\n");
-		printf("  value: %g\n", ((PyFloatObject *) p)->ob_fval);
+		s = PyOS_double_to_string(
+			((PyFloatObject *) p)->ob_fval, 'r', 0, Py_DTSF_ADD_DOT_0, NULL);
+		printf("  value: %s\n", s);
+		PyMem_Free(s);
 	}
 	else
 	{
