@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include <Python.h>
 
@@ -19,7 +20,7 @@ void print_python_float(PyObject *p)
 		printf("[.] float object info\n");
 		s = PyOS_double_to_string(
 			((PyFloatObject *) p)->ob_fval, 'g', 16, 0, NULL);
-		printf("  value: %s\n", s);
+		printf("  value: %s%s\n", s, strchr(s, '.') ? "" : ".0");
 		PyMem_Free(s);
 	}
 	else
