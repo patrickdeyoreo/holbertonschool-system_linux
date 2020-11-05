@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 
 #include <Python.h>
 
@@ -15,12 +14,13 @@ void print_python_float(PyObject *p)
 	char *s = NULL;
 
 	setbuf(stdout, NULL);
-	if (PyFloat_Check(p))
+	printf("[.] float object info\n");
+	if (p && PyFloat_Check(p))
 	{
-		printf("[.] float object info\n");
 		s = PyOS_double_to_string(
-			((PyFloatObject *) p)->ob_fval, 'g', 16, 0, NULL);
-		printf("  value: %s%s\n", s, strchr(s, '.') ? "" : ".0");
+			((PyFloatObject *) p)->ob_fval, 'g', 16,
+			Py_DTSF_ADD_DOT_0, NULL);
+		printf("  value: %s\n", s);
 		PyMem_Free(s);
 	}
 	else
@@ -37,11 +37,11 @@ void print_python_float(PyObject *p)
 void print_python_bytes(PyObject *p)
 {
 	Py_ssize_t i = 0;
-	Py_ssize_t n = ((PyVarObject *) p)->ob_size;
+	Py_ssize_t n = p ? ((PyVarObject *) p)->ob_size : 0;
 
 	setbuf(stdout, NULL);
 	printf("[.] bytes object info\n");
-	if (PyBytes_Check(p))
+	if (p && PyBytes_Check(p))
 	{
 		printf("  size: %ld\n", n);
 		printf("  trying string: %s\n",
@@ -67,11 +67,11 @@ void print_python_bytes(PyObject *p)
 void print_python_list(PyObject *p)
 {
 	Py_ssize_t i = 0;
-	Py_ssize_t n = ((PyVarObject *) p)->ob_size;
+	Py_ssize_t n = p ? ((PyVarObject *) p)->ob_size : 0;
 	PyObject *o = NULL;
 
 	setbuf(stdout, NULL);
-	if (PyList_Check(p))
+	if (p && PyList_Check(p))
 	{
 		printf("[*] Python list info\n");
 		printf("[*] Size of the Python List = %ld\n", n);
