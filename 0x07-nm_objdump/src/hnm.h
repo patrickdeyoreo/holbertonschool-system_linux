@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 #include "etoh.h"
-#include "load.h"
+#include "read.h"
 
 int hnm(const char *filename);
 

@@ -5,28 +5,28 @@
 /**
  * hnm32 - list symbols from 32-bit object files
  *
- * @filename: name of the input file
  * @ident: elf identifier bytes
+ * @istream: input file stream
  *
  * Return: 1 if an error occurs, otherwise 0
  */
-static int hnm32(const char *filename, unsigned char (*ident)[EI_NIDENT])
+static int hnm32(unsigned char (*ident)[EI_NIDENT], FILE *istream)
 {
-	loadfn_t loadfntab[LOADFNTABSIZE] = {0};
 	Elf32_Ehdr ehdr;
+	readfn_t readfntab[READFNTABSZ] = {0};
 
 	switch ((*ident)[EI_DATA])
 	{
 	case ELFDATA2LSB:
-		loadfntabinit32le(&loadfntab);
+		readfntab32leinit(&readfntab);
 		break;
 	case ELFDATA2MSB:
-		loadfntabinit32be(&loadfntab);
+		readfntab32beinit(&readfntab);
 		break;
 	default:
 		return (1);
 	}
-	if (loadfntab[ehdrloadfntabidx](filename, &ehdr) != 0)
+	if (readfntab[ehdrreadfnidx](&ehdr, istream) != 0)
 	{
 		return (1);
 	}
@@ -36,28 +36,28 @@ static int hnm32(const char *filename, unsigned char (*ident)[EI_NIDENT])
 /**
  * hnm64 - list symbols from 64-bit object files
  *
- * @filename: name of the input file
  * @ident: elf identifier bytes
+ * @istream: input file stream
  *
  * Return: 1 if an error occurs, otherwise 0
  */
-static int hnm64(const char *filename, unsigned char (*ident)[EI_NIDENT])
+static int hnm64(unsigned char (*ident)[EI_NIDENT], FILE *istream)
 {
-	loadfn_t loadfntab[LOADFNTABSIZE] = {0};
+	readfn_t readfntab[READFNTABSZ] = {0};
 	Elf64_Ehdr ehdr;
 
 	switch ((*ident)[EI_DATA])
 	{
 	case ELFDATA2LSB:
-		loadfntabinit64le(&loadfntab);
+		readfntab64leinit(&readfntab);
 		break;
 	case ELFDATA2MSB:
-		loadfntabinit64be(&loadfntab);
+		readfntab64beinit(&readfntab);
 		break;
 	default:
 		return (1);
 	}
-	if (loadfntab[ehdrloadfntabidx](filename, &ehdr) != 0)
+	if (readfntab[ehdrreadfnidx](&ehdr, istream) != 0)
 	{
 		return (1);
 	}
@@ -74,6 +74,7 @@ static int hnm64(const char *filename, unsigned char (*ident)[EI_NIDENT])
 int hnm(const char *filename)
 {
 	unsigned char ident[EI_NIDENT] = {0};
+	int (*xx)(unsigned char (*)[EI_NIDENT], FILE *) = NULL;
 	FILE *istream = filename ? fopen(filename, "r") : NULL;
 
 	if (!istream)
@@ -85,18 +86,30 @@ int hnm(const char *filename)
 		fclose(istream);
 		return (1);
 	}
-	fclose(istream);
 	if (memcmp(ident, ELFMAG, SELFMAG))
 	{
+		fclose(istream);
 		return (1);
 	}
 	switch (ident[EI_CLASS])
 	{
 	case ELFCLASS32:
-		return (hnm32(filename, &ident));
+		xx = hnm32;
+		break;
 	case ELFCLASS64:
-		return (hnm64(filename, &ident));
+		xx = hnm64;
+		break;
 	default:
+		return (1);
+	}
+	rewind(istream);
+	switch (xx(&ident, istream))
+	{
+	case 0:
+		fclose(istream);
+		return (0);
+	default:
+		fclose(istream);
 		return (1);
 	}
 }
