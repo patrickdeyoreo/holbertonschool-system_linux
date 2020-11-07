@@ -1,14 +1,14 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include <python3.5/Python.h>
+#include <Python.h>
 
 /**
  * print_python_int - print basic info about a Python int object
  *
  * @p: pointer to a Python object
  */
-void print_python_string(PyObject *p)
+void print_python_int(PyObject *p)
 {
 	unsigned long int value = 0;
 	unsigned long int total = 0;
