@@ -17,10 +17,10 @@ void print_python_int(PyObject *p)
 	size_t shift = 0;
 	size_t index = 0;
 
-	printf("[.] int object info\n");
+	setbuf(stdout, NULL);
 	if (!p || !PyLong_Check(p))
 	{
-		printf("  [ERROR] Invalid Int Object\n");
+		printf("Invalid Int Object\n");
 		return;
 	}
 	negative = ((PyVarObject *) p)->ob_size < 0;
@@ -44,5 +44,4 @@ void print_python_int(PyObject *p)
 	if (negative)
 		printf("-");
 	printf("%lu\n", total);
-	fflush(stdout);
 }
