@@ -10,6 +10,116 @@
 
 /**
  * enum type_e - enumerate syscall parameters and return types
+ *
+ * @VOID: void
+ * @AIO_CONTEXT_T: aio_context_t
+ * @AIO_CONTEXT_T_P: aio_context_t pointer
+ * @CADDR_T: caddr_t
+ * @CAP_USER_DATA_T: cap_user_data_t
+ * @CAP_USER_HEADER_T: cap_user_header_t
+ * @CHAR_P: char pointer
+ * @CLOCKID_T: clockid_t
+ * @CLOCK_T: clock_t
+ * @CPU_SET_T_P: cpu_set_t pointer
+ * @DEV_T: dev_t
+ * @ENUM___PTRACE_REQUEST: enum___ptrace_request
+ * @FD_SET_P: fd_set pointer
+ * @GID_T: gid_t
+ * @GID_T_P: gid_t pointer
+ * @IDTYPE_T: idtype_t
+ * @ID_T: id_t
+ * @INT: int
+ * @INT_P: int pointer
+ * @KEY_SERIAL_T: key_serial_t
+ * @KEY_T: key_t
+ * @LOFF_T_P: loff_t pointer
+ * @LONG: long
+ * @LONG_P: long pointer
+ * @MODE_T: mode_t
+ * @MQD_T: mqd_t
+ * @NFDS_T: nfds_t
+ * @OFF64_T: off64_t
+ * @OFF_T: off_t
+ * @OFF_T_P: off_t pointer
+ * @PID_T: pid_t
+ * @SIGHANDLER_T: sighandler_t
+ * @SIGINFO_T_P: siginfo_t pointer
+ * @SIGSET_T_P: sigset_t pointer
+ * @SIZE_T: size_t
+ * @SIZE_T_P: size_t pointer
+ * @SOCKLEN_T: socklen_t
+ * @SOCKLEN_T_P: socklen_t pointer
+ * @SSIZE_T: ssize_t
+ * @STACK_T_P: stack_t pointer
+ * @STRUCT_EPOLL_EVENT_P: struct_epoll_event pointer
+ * @STRUCT_GETCPU_CACHE_P: struct_getcpu_cache pointer
+ * @STRUCT_IOCB_P: struct_iocb pointer
+ * @STRUCT_IOCB_PP: struct_iocb double-pointer
+ * @STRUCT_IOVEC_P: struct_iovec pointer
+ * @STRUCT_IO_EVENT_P: struct_io_event pointer
+ * @STRUCT_ITIMERSPEC_P: struct_itimerspec pointer
+ * @STRUCT_ITIMERVAL_P: struct_itimerval pointer
+ * @STRUCT_KERNEL_SYM_P: struct_kernel_sym pointer
+ * @STRUCT_KEXEC_SEGMENT_P: struct_kexec_segment pointer
+ * @STRUCT_LINUX_DIRENT_P: struct_linux_dirent pointer
+ * @STRUCT_MMSGHDR_P: struct_mmsghdr pointer
+ * @STRUCT_MQ_ATTR_P: struct_mq_attr pointer
+ * @STRUCT_MSGHDR_P: struct_msghdr pointer
+ * @STRUCT_MSQID_DS_P: struct_msqid_ds pointer
+ * @STRUCT_NFSCTL_ARG_P: struct_nfsctl_arg pointer
+ * @STRUCT_OLD_LINUX_DIRENT_P: struct_old_linux_dirent pointer
+ * @STRUCT_PERF_EVENT_ATTR_P: struct_perf_event_attr pointer
+ * @STRUCT_POLLFD_P: struct_pollfd pointer
+ * @STRUCT_RLIMIT_P: struct_rlimit pointer
+ * @STRUCT_ROBUST_LIST_HEAD_P: struct_robust_list_head pointer
+ * @STRUCT_ROBUST_LIST_HEAD_PP: struct_robust_list_head double-pointer
+ * @STRUCT_RUSAGE_P: struct_rusage pointer
+ * @STRUCT_SCHED_ATTR_P: struct_sched_attr pointer
+ * @STRUCT_SCHED_PARAM_P: struct_sched_param pointer
+ * @STRUCT_SEMBUF_P: struct_sembuf pointer
+ * @STRUCT_SHMID_DS_P: struct_shmid_ds pointer
+ * @STRUCT_SIGACTION_P: struct_sigaction pointer
+ * @STRUCT_SIGEVENT_P: struct_sigevent pointer
+ * @STRUCT_SOCKADDR_P: struct_sockaddr pointer
+ * @STRUCT_STATFS_P: struct_statfs pointer
+ * @STRUCT_STAT_P: struct_stat pointer
+ * @STRUCT_SYSINFO_P: struct_sysinfo pointer
+ * @STRUCT_TIMESPEC: struct_timespec
+ * @STRUCT_TIMESPEC_P: struct_timespec pointer
+ * @STRUCT_TIMEVAL: struct_timeval
+ * @STRUCT_TIMEVAL_P: struct_timeval pointer
+ * @STRUCT_TIMEX_P: struct_timex pointer
+ * @STRUCT_TIMEZONE_P: struct_timezone pointer
+ * @STRUCT_TMS_P: struct_tms pointer
+ * @STRUCT_USER_DESC_P: struct_user_desc pointer
+ * @STRUCT_USTAT_P: struct_ustat pointer
+ * @STRUCT_UTIMBUF_P: struct_utimbuf pointer
+ * @STRUCT_UTSNAME_P: struct_utsname pointer
+ * @STRUCT_VM86_STRUCT_P: struct_vm86_struct pointer
+ * @STRUCT___SYSCTL_ARGS_P: struct___sysctl_args pointer
+ * @TIMER_T: timer_t
+ * @TIMER_T_P: timer_t pointer
+ * @TIME_T: time_t
+ * @TIME_T_P: time_t pointer
+ * @U64: u64
+ * @UID_T: uid_t
+ * @UID_T_P: uid_t pointer
+ * @UINT32_T: uint32_t
+ * @UNION_NFSCTL_RES_P: union_nfsctl_res pointer
+ * @UNSIGNED_CHAR_P: unsigned_char pointer
+ * @UNSIGNED_FLAGS: unsigned_flags
+ * @UNSIGNED_INT: unsigned_int
+ * @UNSIGNED_LONG: unsigned_long
+ * @UNSIGNED_LONG_P: unsigned_long pointer
+ * @UNSIGNED_MSG_PRIO: unsigned_msg_prio
+ * @UNSIGNED_NR_EVENTS: unsigned_nr_events
+ * @UNSIGNED_NSOPS: unsigned_nsops
+ * @UNSIGNED_PCPU: unsigned_pcpu
+ * @UNSIGNED_PMSG_PRIO: unsigned_pmsg_prio
+ * @UNSIGNED_PNODE: unsigned_pnode
+ * @VARARGS: varargs
+ * @VOID_P: void pointer
+ * @VOID_PP: void double-pointer
  */
 typedef enum type_e
 {
