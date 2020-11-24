@@ -8,7 +8,14 @@
 #include "strace.h"
 #include "syscalls.h"
 
-
+/**
+ * strace - execute strace
+ *
+ * @argc: argument count
+ * @argv: argument vector
+ *
+ * Return: Upon success. return EXIT_SUCCESS. Otherwise, return EXIT_FAILURE.
+ */
 int strace(int argc, char **argv)
 {
 	struct user_regs_struct regs = {0};
@@ -39,25 +46,25 @@ int strace(int argc, char **argv)
 		ptrace(PTRACE_GETREGS, child, NULL, &regs) == 0)
 	{
 		syscall = &(*syscall_table())[regs.orig_rax];
-		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1 ||
-			wait(&wstatus) == -1 ||
-			ptrace(PTRACE_GETREGS, child, NULL, &regs) == -1)
-		{
-			return (EXIT_FAILURE);
-		}
 		printf("%s(", syscall->name);
 		param_index = 0;
 		param_count = syscall->param_count;
 		while (param_index < param_count)
 		{
-			arg = *((param_reg_t *)
-				(&regs + (*param_reg_offset_table())[param_index]));
+			arg = *PARAM_REG_PTR(&regs, param_index);
 #ifdef __x86_64__
 			printf("%s%llx", arg ? "0x" : "", arg);
 #else
 			printf("%s%lx", arg ? "0x" : "", arg);
 #endif
-			printf(++param_index < param_count ? ", " : ") = ");
+			param_index += 1;
+			printf(param_index < param_count ? ", " : ") = ");
+		}
+		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1 ||
+			wait(&wstatus) == -1 ||
+			ptrace(PTRACE_GETREGS, child, NULL, &regs) == -1)
+		{
+			return (EXIT_FAILURE);
 		}
 #ifdef __x86_64__
 		printf("%s%llx\n", regs.rax ? "0x" : "", regs.rax);
@@ -68,7 +75,14 @@ int strace(int argc, char **argv)
 	return (EXIT_SUCCESS);
 }
 
-
+/**
+ * main - entry point
+ *
+ * @argc: argument count
+ * @argv: argument vector
+ *
+ * Return: Upon success. return EXIT_SUCCESS. Otherwise, return EXIT_FAILURE.
+ */
 int main(int argc, char **argv)
 {
 	if (argc > 1)

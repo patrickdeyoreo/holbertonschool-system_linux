@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <sys/user.h>
 
 /* normally, MAX_PARAMS is always 6 */
 #define	MAX_PARAMS 6
@@ -122,7 +123,7 @@
  */
 typedef enum type_e
 {
-	VOID = 0,
+	VOID,
 	AIO_CONTEXT_T,
 	AIO_CONTEXT_T_P,
 	CADDR_T,
@@ -238,9 +239,9 @@ typedef enum type_e
  *
  * @name: name of the syscall
  * @num: syscall number
- * @ret_type: return type
- * @arg_count: number of parameters
- * @arg_types: array of parameters types
+ * @return_type: return type
+ * @param_count: number of parameters
+ * @param_types: array of parameter types
  */
 typedef struct syscall_s
 {
@@ -253,9 +254,29 @@ typedef struct syscall_s
 
 #ifdef __x86_64__
 
+/**
+ * enum param_reg_index_e - enumerate parameter register indices
+ *
+ * @PARAM_REG_RDI: rdi register
+ * @PARAM_REG_RSI: rsi register
+ * @PARAM_REG_RDX: rdx register
+ * @PARAM_REG_RCX: rcx register
+ * @PARAM_REG_R8: r8 register
+ * @PARAM_REG_R9: r9 register
+ */
+enum param_reg_index_e
+{
+	PARAM_REG_RDI,
+	PARAM_REG_RSI,
+	PARAM_REG_RDX,
+	PARAM_REG_RCX,
+	PARAM_REG_R8,
+	PARAM_REG_R9
+};
+
 typedef unsigned long long int param_reg_t;
 
-#define PARAM_REG_OFFSET_TABLE_SIZE MAX_PARAMS
+#define PARAM_REG_OFFSET_TABLE_SIZE 6
 #define PARAM_REG_OFFSET_TABLE_INIT					\
 {									\
 	&((struct user_regs_struct *) 0)->rdi - (param_reg_t *) 0,	\
@@ -265,6 +286,8 @@ typedef unsigned long long int param_reg_t;
 	&((struct user_regs_struct *) 0)->r8 - (param_reg_t *) 0,	\
 	&((struct user_regs_struct *) 0)->r9 - (param_reg_t *) 0	\
 }
+#define PARAM_REG_PTR(regs_ptr, index)					\
+	((param_reg_t *) (regs_ptr) + (*param_reg_offset_table())[index])
 
 #define SYSCALL_TABLE_SIZE 318
 #define SYSCALL_TABLE_INIT						\
@@ -965,9 +988,29 @@ typedef unsigned long long int param_reg_t;
 
 #else
 
+/**
+ * enum param_reg_index_e - enumerate parameter register indices
+ *
+ * @PARAM_REG_RDI: rdi register
+ * @PARAM_REG_RSI: rsi register
+ * @PARAM_REG_RDX: rdx register
+ * @PARAM_REG_RCX: rcx register
+ * @PARAM_REG_R8: r8 register
+ * @PARAM_REG_R9: r9 register
+ */
+enum param_reg_index_e
+{
+	PARAM_REG_RDI,
+	PARAM_REG_RSI,
+	PARAM_REG_RDX,
+	PARAM_REG_RCX,
+	PARAM_REG_R8,
+	PARAM_REG_R9
+};
+
 typedef unsigned long int param_reg_t;
 
-#define PARAM_REG_OFFSET_TABLE_SIZE MAX_PARAMS
+#define PARAM_REG_OFFSET_TABLE_SIZE 6
 #define PARAM_REG_OFFSET_TABLE_INIT					\
 {									\
 	&((struct user_regs_struct *) 0)->rdi - (param_reg_t *) 0,	\
@@ -977,6 +1020,8 @@ typedef unsigned long int param_reg_t;
 	&((struct user_regs_struct *) 0)->r8 - (param_reg_t *) 0,	\
 	&((struct user_regs_struct *) 0)->r9 - (param_reg_t *) 0	\
 }
+#define PARAM_REG_PTR(regs_ptr, index)					\
+	((param_reg_t *) (regs_ptr) + (*param_reg_offset_table())[index])
 
 #define SYSCALL_TABLE_SIZE 355
 #define SYSCALL_TABLE_INIT						\

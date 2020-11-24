@@ -8,7 +8,14 @@
 #include "strace.h"
 #include "syscalls.h"
 
-
+/**
+ * strace - execute strace
+ *
+ * @argc: argument count
+ * @argv: argument vector
+ *
+ * Return: Upon success. return EXIT_SUCCESS. Otherwise, return EXIT_FAILURE.
+ */
 int strace(int argc, char **argv)
 {
 	struct user_regs_struct regs = {0};
@@ -47,6 +54,14 @@ int strace(int argc, char **argv)
 }
 
 
+/**
+ * main - entry point
+ *
+ * @argc: argument count
+ * @argv: argument vector
+ *
+ * Return: Upon success. return EXIT_SUCCESS. Otherwise, return EXIT_FAILURE.
+ */
 int main(int argc, char **argv)
 {
 	if (argc > 1)

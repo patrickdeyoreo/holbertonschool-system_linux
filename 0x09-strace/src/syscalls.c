@@ -1,5 +1,3 @@
-#include <sys/user.h>
-
 #include "syscalls.h"
 
 /**
@@ -15,9 +13,9 @@ syscall_table_t *syscall_table(void)
 }
 
 /**
- * param_reg_offset_table - get a pointer to the param regs offset table
+ * param_reg_offset_table - get a pointer to the syscall table
  *
- * Return: pointer to the param regs offset table
+ * Return: pointer to the syscall table
  */
 param_reg_offset_table_t *param_reg_offset_table(void)
 {
