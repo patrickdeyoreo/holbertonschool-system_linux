@@ -286,8 +286,12 @@ typedef unsigned long long int param_reg_t;
 	&((struct user_regs_struct *) 0)->r8 - (param_reg_t *) 0,	\
 	&((struct user_regs_struct *) 0)->r9 - (param_reg_t *) 0	\
 }
+
 #define PARAM_REG_PTR(regs_ptr, index)					\
 	((param_reg_t *) (regs_ptr) + (*param_reg_offset_table())[index])
+
+#define PRINT_REGISTER(reg)						\
+	(printf("%llx", (reg)))
 
 #define SYSCALL_TABLE_SIZE 318
 #define SYSCALL_TABLE_INIT						\
@@ -1020,8 +1024,12 @@ typedef unsigned long int param_reg_t;
 	&((struct user_regs_struct *) 0)->r8 - (param_reg_t *) 0,	\
 	&((struct user_regs_struct *) 0)->r9 - (param_reg_t *) 0	\
 }
+
 #define PARAM_REG_PTR(regs_ptr, index)					\
 	((param_reg_t *) (regs_ptr) + (*param_reg_offset_table())[index])
+
+#define PRINT_REGISTER(reg)						\
+	(printf("%lx", (reg)))
 
 #define SYSCALL_TABLE_SIZE 355
 #define SYSCALL_TABLE_INIT						\

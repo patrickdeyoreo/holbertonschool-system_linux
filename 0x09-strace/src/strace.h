@@ -1,6 +1,6 @@
 #ifndef _STRACE_H_
 #define _STRACE_H_
 
-int strace(int argc, char **argv);
+int strace(char **exec);
 
 #endif /* _STRACE_H_ */

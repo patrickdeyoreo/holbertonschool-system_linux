@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/ptrace.h>
@@ -9,50 +10,55 @@
 #include "syscalls.h"
 
 /**
- * strace - execute strace
+ * strace_loop - execute strace loop
  *
- * @argc: argument count
- * @argv: argument vector
+ * @tracee: PID of tracee
  *
  * Return: Upon success. return EXIT_SUCCESS. Otherwise, return EXIT_FAILURE.
  */
-int strace(int argc, char **argv)
+static int strace_loop(pid_t tracee)
 {
 	struct user_regs_struct regs = {0};
-	syscall_t const *syscall = NULL;
-	int wstatus = 0;
+
+	while (true)
+	{
+		if (ptrace(PTRACE_SYSCALL, tracee, NULL, NULL))
+			return (EXIT_SUCCESS);
+		if (wait(NULL) != tracee)
+			return (EXIT_FAILURE);
+		if (ptrace(PTRACE_GETREGS, tracee, NULL, &regs))
+			return (EXIT_FAILURE);
+		printf("%s\n", (*syscall_table())[regs.orig_rax].name);
+		if (ptrace(PTRACE_SYSCALL, tracee, NULL, NULL) == -1)
+			return (EXIT_FAILURE);
+		if (wait(NULL) != tracee)
+			return (EXIT_FAILURE);
+	}
+}
+
+/**
+ * strace - fork, exec, and trace
+ *
+ * @exec: exec argument vector
+ *
+ * Return: Upon success. return EXIT_SUCCESS. Otherwise, return EXIT_FAILURE.
+ */
+int strace(char **exec)
+{
 	pid_t child = fork();
 
 	if (child == 0)
 	{
 		ptrace(PTRACE_TRACEME, 0, NULL, NULL);
-		argv[argc] = NULL;
-		execvp(argv[1], argv + 1);
+		execvp(exec[0], exec);
 		return (EXIT_FAILURE);
 	}
 	if (child == -1)
-	{
 		return (EXIT_FAILURE);
-	}
-	if (wait(&wstatus) == -1)
-	{
+	if (wait(NULL) == -1)
 		return (EXIT_FAILURE);
-	}
-	while (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == 0 &&
-		wait(&wstatus) == child &&
-		ptrace(PTRACE_GETREGS, child, NULL, &regs) == 0)
-	{
-		syscall = &(*syscall_table())[regs.orig_rax];
-		printf("%s\n", syscall->name);
-		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1 ||
-			wait(&wstatus) == -1)
-		{
-			return (EXIT_FAILURE);
-		}
-	}
-	return (EXIT_SUCCESS);
+	return (strace_loop(child));
 }
-
 
 /**
  * main - entry point
@@ -65,7 +71,7 @@ int strace(int argc, char **argv)
 int main(int argc, char **argv)
 {
 	if (argc > 1)
-		return (strace(argc, argv));
+		return (strace(argv + 1));
 	fprintf(stderr, "usage: %s PROG [ARGS]\n", *argv);
 	return (EXIT_FAILURE);
 }
