@@ -16,22 +16,20 @@
  *
  * Return: Upon success. return EXIT_SUCCESS. Otherwise, return EXIT_FAILURE.
  */
-static int strace_loop(pid_t tracee)
+static int strace_loop(pid_t tracee, struct user_regs_struct *regs)
 {
-	struct user_regs_struct regs = {0};
-
 	while (true)
 	{
 		if (ptrace(PTRACE_SYSCALL, tracee, NULL, NULL))
 			return (EXIT_SUCCESS);
 		if (wait(NULL) != tracee)
 			return (EXIT_FAILURE);
-		if (ptrace(PTRACE_GETREGS, tracee, NULL, &regs))
+		if (ptrace(PTRACE_GETREGS, tracee, NULL, regs))
 			return (EXIT_FAILURE);
 #ifdef __x86_64__
-		__extension__ printf("%llu\n", regs.orig_rax);
+		__extension__ printf("%llu\n", regs->orig_rax);
 #else
-		printf("%lu\n", regs.orig_rax);
+		printf("%lu\n", regs->orig_rax);
 #endif
 		if (ptrace(PTRACE_SYSCALL, tracee, NULL, NULL) == -1)
 			return (EXIT_FAILURE);
@@ -49,19 +47,27 @@ static int strace_loop(pid_t tracee)
  */
 int strace(char **exec)
 {
+	struct user_regs_struct regs = {0};
 	pid_t child = fork();
 
 	if (child == 0)
 	{
 		ptrace(PTRACE_TRACEME, 0, NULL, NULL);
-		execvp(exec[0], exec);
+		execve(exec[0], exec, environ);
 		return (EXIT_FAILURE);
 	}
 	if (child == -1)
 		return (EXIT_FAILURE);
 	if (wait(NULL) == -1)
 		return (EXIT_FAILURE);
-	return (strace_loop(child));
+	if (ptrace(PTRACE_GETREGS, child, NULL, &regs))
+		return (EXIT_FAILURE);
+#ifdef __x86_64__
+	__extension__ printf("%llu\n", regs.orig_rax);
+#else
+	printf("%lu\n", regs.orig_rax);
+#endif
+	return (strace_loop(child, &regs));
 }
 
 /**
