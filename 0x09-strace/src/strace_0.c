@@ -28,7 +28,11 @@ static int strace_loop(pid_t tracee)
 			return (EXIT_FAILURE);
 		if (ptrace(PTRACE_GETREGS, tracee, NULL, &regs))
 			return (EXIT_FAILURE);
-		PRINT_REGISTER(regs.orig_rax);
+#ifdef __x86_64__
+		__extension__ printf("%llu\n", regs.orig_rax);
+#else
+		printf("%lu\n", regs.orig_rax);
+#endif
 		if (ptrace(PTRACE_SYSCALL, tracee, NULL, NULL) == -1)
 			return (EXIT_FAILURE);
 		if (wait(NULL) != tracee)
