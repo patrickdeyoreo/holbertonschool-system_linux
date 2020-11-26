@@ -13,6 +13,7 @@
  * strace_loop - execute strace loop
  *
  * @tracee: PID of tracee
+ * @regs: structure to hold user registers
  *
  * Return: Upon success. return EXIT_SUCCESS. Otherwise, return EXIT_FAILURE.
  */
