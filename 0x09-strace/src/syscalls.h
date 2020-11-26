@@ -274,7 +274,7 @@ enum param_reg_index_e
 	PARAM_REG_R9
 };
 
-typedef unsigned long long int param_reg_t;
+__extension__ typedef unsigned long long int param_reg_t;
 
 #define PARAM_REG_OFFSET_TABLE_SIZE 6
 #define PARAM_REG_OFFSET_TABLE_INIT					\
@@ -291,7 +291,7 @@ typedef unsigned long long int param_reg_t;
 	((param_reg_t *) (regs_ptr) + (*param_reg_offset_table())[index])
 
 #define PRINT_REGISTER(reg)						\
-	(printf("%llx", (reg)))
+	(__extension__ (printf("%llx", (param_reg_t) (reg))))
 
 #define SYSCALL_TABLE_SIZE 318
 #define SYSCALL_TABLE_INIT						\
@@ -1029,7 +1029,7 @@ typedef unsigned long int param_reg_t;
 	((param_reg_t *) (regs_ptr) + (*param_reg_offset_table())[index])
 
 #define PRINT_REGISTER(reg)						\
-	(printf("%lx", (reg)))
+	(printf("%lx", (param_reg_t) (reg)))
 
 #define SYSCALL_TABLE_SIZE 355
 #define SYSCALL_TABLE_INIT						\

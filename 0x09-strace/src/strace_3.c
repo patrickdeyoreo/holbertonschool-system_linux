@@ -56,6 +56,7 @@ static int strace_loop(pid_t tracee)
 		if (regs.rax)
 			printf("0x");
 		PRINT_REGISTER(regs.rax);
+		printf("\n");
 	}
 }
 
