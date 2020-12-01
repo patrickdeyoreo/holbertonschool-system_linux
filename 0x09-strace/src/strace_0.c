@@ -1,14 +1,33 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/ptrace.h>
-#include <sys/user.h>
-#include <sys/wait.h>
-#include <unistd.h>
 
 #include "strace.h"
 #include "syscalls.h"
+
+/**
+ * trace_syscall - trace child until next entrance into or exit from a syscall
+ *
+ * @child: PID of the cild process being traced
+ *
+ * Return: If the tracee (child process) exits, return 0. Otherwise, return 1.
+ */
+static int trace_syscall(pid_t child)
+{
+	int status = 0;
+
+	while (1)
+	{
+		if (ptrace(PTRACE_SYSCALL, child, 0, 0))
+			return (0);
+		if (wait(&status) != child)
+			return (0);
+		if (WIFSTOPPED(status) && WSTOPSIG(status) & 0x80)
+			return (1);
+		if (WIFEXITED(status))
+			return (0);
+	}
+}
 
 /**
  * strace - trace system calls
@@ -17,37 +36,41 @@
  *
  * Return: Upon success. return EXIT_SUCCESS. Otherwise, return EXIT_FAILURE.
  */
-int strace(pid_t tracee)
+static void tracer(pid_t child)
 {
 	struct user_regs_struct regs = {0};
-	int status = 0;
 
-	if (wait(NULL) == -1)
-		return (EXIT_FAILURE);
-
-	while (1)
+	if (wait(NULL) == child)
 	{
-		if (ptrace(PTRACE_SYSCALL, tracee, NULL, NULL))
-			return (EXIT_SUCCESS);
-		if (wait(&status) != tracee)
-			return (EXIT_FAILURE);
-		if (WIFEXITED(status))
-			return (EXIT_SUCCESS);
-		memset(&regs, 0, sizeof(regs));
-		if (ptrace(PTRACE_GETREGS, tracee, NULL, &regs))
-			return (EXIT_FAILURE);
+		setbuf(stdout, NULL);
+		ptrace(PTRACE_SETOPTIONS, child, 0, PTRACE_O_TRACESYSGOOD);
+		while (1)
+		{
+			if (!trace_syscall(child))
+				break;
+			if (ptrace(PTRACE_GETREGS, child, NULL, &regs))
+				break;
 #ifdef __x86_64__
-		__extension__ printf("%llu\n", regs.orig_rax);
+			__extension__ printf("%llu\n", regs.orig_rax);
 #else
-		printf("%lu\n", regs.orig_rax);
+			printf("%lu\n", regs.orig_rax);
 #endif
-		if (ptrace(PTRACE_SYSCALL, tracee, NULL, NULL))
-			return (EXIT_SUCCESS);
-		if (wait(&status) != tracee)
-			return (EXIT_FAILURE);
-		if (WIFEXITED(status))
-			return (EXIT_SUCCESS);
+			if (!trace_syscall(child))
+				break;
+		}
 	}
+}
+
+/**
+ * tracee - call in child prcocess
+ *
+ * @exec: exec arguments
+ */
+static void tracee(char **exec)
+{
+	ptrace(PTRACE_TRACEME, 0, NULL, NULL);
+	kill(getpid(), SIGSTOP);
+	execve(*exec, exec, environ);
 }
 
 /**
@@ -67,19 +90,18 @@ int main(int argc, char **argv)
 		fprintf(stderr, "usage: %s PROG [ARGS]\n", *argv);
 		return (EXIT_FAILURE);
 	}
-	setbuf(stdout, NULL);
 	child = fork();
-	if (child == -1)
+	if (child < 0)
 	{
 		perror(*argv);
 		return (EXIT_FAILURE);
 	}
 	if (child == 0)
 	{
-		ptrace(PTRACE_TRACEME, 0, NULL, NULL);
-		execve(argv[1], argv + 1, environ);
+		tracee(argv + 1);
 		perror(*argv);
 		return (EXIT_FAILURE);
 	}
-	return strace(child);
+	tracer(child);
+	return (EXIT_SUCCESS);
 }
