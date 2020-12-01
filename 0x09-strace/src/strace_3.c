@@ -30,6 +30,38 @@ static int trace_syscall(pid_t child)
 }
 
 /**
+ * print_syscall_args - print syscall arguments
+ *
+ * @regs: pointer to a user_regs_struct
+ */
+static void print_syscall_args(struct user_regs_struct *regs)
+{
+	const syscall_t *syscall = &(*syscall_table())[regs->orig_rax];
+	param_reg_t *arg = NULL;
+	size_t arg_count = syscall->param_count;
+	size_t arg_index = 0;
+
+	while (arg_index < arg_count)
+	{
+		switch (syscall->param_types[arg_index])
+		{
+		case VARARGS:
+			printf("...");
+			break;
+		default:
+			arg = PARAM_REG_PTR(&regs, arg_index);
+			if (*arg)
+				printf("0x");
+			PRINT_REG_x(*arg);
+			break;
+		}
+		arg_index += 1;
+		if (arg_index < arg_count)
+			printf(", ");
+	}
+}
+
+/**
  * tracer - call in tracer (parent)
  *
  * @child: PID of tracee (child)
@@ -39,8 +71,6 @@ static int trace_syscall(pid_t child)
 static void tracer(pid_t child)
 {
 	struct user_regs_struct regs = {0};
-	size_t arg_count = 0;
-	size_t arg_index = 0;
 
 	if (wait(NULL) == child)
 	{
@@ -54,17 +84,7 @@ static void tracer(pid_t child)
 				break;
 			}
 			printf("%s(", (*syscall_table())[regs.orig_rax].name);
-			arg_count = (*syscall_table())[regs.orig_rax].param_count;
-			arg_index = 0;
-			while (arg_index < arg_count)
-			{
-				if (*PARAM_REG_PTR(&regs, arg_index))
-					printf("0x");
-				PRINT_REG_x(*PARAM_REG_PTR(&regs, arg_index));
-				arg_index += 1;
-				if (arg_index < arg_count)
-					printf(", ");
-			}
+			print_syscall_args(&regs);
 			if (!trace_syscall(child) ||
 				ptrace(PTRACE_GETREGS, child, NULL, &regs))
 			{
