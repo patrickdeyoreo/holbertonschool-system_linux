@@ -46,15 +46,13 @@ static void tracer(pid_t child)
 		ptrace(PTRACE_SETOPTIONS, child, 0, PTRACE_O_TRACESYSGOOD);
 		while (1)
 		{
-			if (!trace_syscall(child))
+			if (!trace_syscall(child) ||
+				ptrace(PTRACE_GETREGS, child, NULL, &regs))
+			{
 				break;
-			if (ptrace(PTRACE_GETREGS, child, NULL, &regs))
-				break;
-#ifdef __x86_64__
-			__extension__ printf("%llu\n", regs.orig_rax);
-#else
-			printf("%lu\n", regs.orig_rax);
-#endif
+			}
+			PRINT_REG_u(regs.orig_rax);
+			printf("\n");
 			if (!trace_syscall(child))
 				break;
 		}

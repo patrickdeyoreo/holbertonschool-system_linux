@@ -19,21 +19,13 @@ static int trace_syscall(pid_t child)
 	while (1)
 	{
 		if (ptrace(PTRACE_SYSCALL, child, 0, 0))
-		{
 			return (0);
-		}
 		if (wait(&status) != child)
-		{
 			return (0);
-		}
 		if (WIFSTOPPED(status) && WSTOPSIG(status) & 0x80)
-		{
 			return (1);
-		}
 		if (WIFEXITED(status))
-		{
 			return (0);
-		}
 	}
 }
 
@@ -54,7 +46,8 @@ static void tracer(pid_t child)
 		ptrace(PTRACE_SETOPTIONS, child, 0, PTRACE_O_TRACESYSGOOD);
 		while (1)
 		{
-			if (!trace_syscall(child) || ptrace(PTRACE_GETREGS, child, NULL, &regs))
+			if (!trace_syscall(child) ||
+				ptrace(PTRACE_GETREGS, child, NULL, &regs))
 			{
 				break;
 			}
