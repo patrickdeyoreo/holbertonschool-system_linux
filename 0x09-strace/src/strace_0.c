@@ -42,6 +42,7 @@ static void tracer(pid_t child)
 
 	if (wait(NULL) == child)
 	{
+		setbuf(stdout, NULL);
 		ptrace(PTRACE_SETOPTIONS, child, 0, PTRACE_O_TRACESYSGOOD);
 		while (1)
 		{
