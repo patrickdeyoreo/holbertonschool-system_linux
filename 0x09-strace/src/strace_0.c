@@ -10,7 +10,7 @@
  *
  * @child: PID of the cild process being traced
  *
- * Return: If the tracee (child process) exits, return 0. Otherwise, return 1.
+ * Return: If the tracee (child) exits, return 0. Otherwise, return 1.
  */
 static int trace_syscall(pid_t child)
 {
@@ -30,9 +30,9 @@ static int trace_syscall(pid_t child)
 }
 
 /**
- * strace - trace system calls
+ * tracer - call in tracer (parent)
  *
- * @tracee: PID of tracee
+ * @child: PID of tracee (child)
  *
  * Return: Upon success. return EXIT_SUCCESS. Otherwise, return EXIT_FAILURE.
  */
@@ -62,7 +62,7 @@ static void tracer(pid_t child)
 }
 
 /**
- * tracee - call in child prcocess
+ * tracee - call in tracee (child)
  *
  * @exec: exec arguments
  */
