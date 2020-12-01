@@ -51,8 +51,11 @@ static void tracer(pid_t child)
 			{
 				break;
 			}
-			PRINT_REG_u(regs.orig_rax);
-			printf("\n");
+#ifdef __x86_64__
+			__extension__ printf("%llu\n", regs.orig_rax);
+#else
+			printf("%lu\n", regs.orig_rax);
+#endif
 			if (!trace_syscall(child))
 				break;
 		}
