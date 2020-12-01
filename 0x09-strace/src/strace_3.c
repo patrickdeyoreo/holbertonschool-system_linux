@@ -62,15 +62,16 @@ static void tracer(pid_t child)
 					printf("0x");
 				PRINT_REG_x(*PARAM_REG_PTR(&regs, arg_index));
 				arg_index += 1;
-				printf(arg_index < arg_count ? ", " : ") = ");
+				if (arg_index < arg_count)
+					printf(", ");
 			}
 			if (!trace_syscall(child) ||
 				ptrace(PTRACE_GETREGS, child, NULL, &regs))
 			{
-				printf(" = ?\n");
+				printf(") = ?\n");
 				break;
 			}
-			printf(" = ");
+			printf(") = ");
 			if (regs.rax)
 				printf("0x");
 			PRINT_REG_x(regs.rax);
