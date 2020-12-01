@@ -19,13 +19,21 @@ static int trace_syscall(pid_t child)
 	while (1)
 	{
 		if (ptrace(PTRACE_SYSCALL, child, 0, 0))
+		{
 			return (0);
+		}
 		if (wait(&status) != child)
+		{
 			return (0);
+		}
 		if (WIFSTOPPED(status) && WSTOPSIG(status) & 0x80)
+		{
 			return (1);
+		}
 		if (WIFEXITED(status))
+		{
 			return (0);
+		}
 	}
 }
 
@@ -47,12 +55,20 @@ static void tracer(pid_t child)
 		while (1)
 		{
 			if (!trace_syscall(child))
+			{
 				break;
+			}
 			if (ptrace(PTRACE_GETREGS, child, NULL, &regs))
+			{
 				break;
-			printf("%s\n", (*syscall_table())[regs.orig_rax].name);
+			}
+			printf("%s", (*syscall_table())[regs.orig_rax].name);
 			if (!trace_syscall(child))
+			{
+				printf("\n");
 				break;
+			}
+			printf("\n");
 		}
 	}
 }
