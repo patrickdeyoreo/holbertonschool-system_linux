@@ -54,11 +54,7 @@ static void tracer(pid_t child)
 		ptrace(PTRACE_SETOPTIONS, child, 0, PTRACE_O_TRACESYSGOOD);
 		while (1)
 		{
-			if (!trace_syscall(child))
-			{
-				break;
-			}
-			if (ptrace(PTRACE_GETREGS, child, NULL, &regs))
+			if (!trace_syscall(child) || ptrace(PTRACE_GETREGS, child, NULL, &regs))
 			{
 				break;
 			}
