@@ -254,26 +254,6 @@ typedef struct syscall_s
 
 #ifdef __x86_64__
 
-/**
- * enum param_reg_index_e - enumerate parameter register indices
- *
- * @PARAM_REG_RDI: rdi register
- * @PARAM_REG_RSI: rsi register
- * @PARAM_REG_RDX: rdx register
- * @PARAM_REG_RCX: rcx register
- * @PARAM_REG_R8: r8 register
- * @PARAM_REG_R9: r9 register
- */
-enum param_reg_index_e
-{
-	PARAM_REG_RDI,
-	PARAM_REG_RSI,
-	PARAM_REG_RDX,
-	PARAM_REG_RCX,
-	PARAM_REG_R8,
-	PARAM_REG_R9
-};
-
 __extension__ typedef unsigned long long int param_reg_t;
 
 #define PARAM_REG_OFFSET_TABLE_SIZE 6
@@ -290,7 +270,10 @@ __extension__ typedef unsigned long long int param_reg_t;
 #define PARAM_REG_PTR(regs_ptr, index)					\
 	((param_reg_t *) (regs_ptr) + (*param_reg_offset_table())[index])
 
-#define PRINT_REGISTER(reg)						\
+#define PRINT_REG_u(reg)						\
+	(__extension__ (printf("%llu", (param_reg_t) (reg))))
+
+#define PRINT_REG_x(reg)						\
 	(__extension__ (printf("%llx", (param_reg_t) (reg))))
 
 #define SYSCALL_TABLE_SIZE 318
@@ -992,26 +975,6 @@ __extension__ typedef unsigned long long int param_reg_t;
 
 #else
 
-/**
- * enum param_reg_index_e - enumerate parameter register indices
- *
- * @PARAM_REG_RDI: rdi register
- * @PARAM_REG_RSI: rsi register
- * @PARAM_REG_RDX: rdx register
- * @PARAM_REG_RCX: rcx register
- * @PARAM_REG_R8: r8 register
- * @PARAM_REG_R9: r9 register
- */
-enum param_reg_index_e
-{
-	PARAM_REG_RDI,
-	PARAM_REG_RSI,
-	PARAM_REG_RDX,
-	PARAM_REG_RCX,
-	PARAM_REG_R8,
-	PARAM_REG_R9
-};
-
 typedef unsigned long int param_reg_t;
 
 #define PARAM_REG_OFFSET_TABLE_SIZE 6
@@ -1028,7 +991,10 @@ typedef unsigned long int param_reg_t;
 #define PARAM_REG_PTR(regs_ptr, index)					\
 	((param_reg_t *) (regs_ptr) + (*param_reg_offset_table())[index])
 
-#define PRINT_REGISTER(reg)						\
+#define PRINT_REG_u(reg)						\
+	(printf("%lu", (param_reg_t) (reg)))
+
+#define PRINT_REG_x(reg)						\
 	(printf("%lx", (param_reg_t) (reg)))
 
 #define SYSCALL_TABLE_SIZE 355
