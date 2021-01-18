@@ -1,3 +1,6 @@
 [submodule "shell_v2"]
 	path = 0x02-shell_v2
 	url = git@github.com:waffle52/shell_v2.git
+[submodule "0x0B-malloc"]
+	path = 0x0B-malloc
+	url = git@github.com:patrickdeyoreo/malloc.git
