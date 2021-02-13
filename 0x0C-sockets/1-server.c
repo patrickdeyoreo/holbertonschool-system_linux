@@ -33,9 +33,9 @@ int accept_connections(int server_sd)
 	client_sd = accept(server_sd, (struct sockaddr *) &client, &client_sz);
 	if (client_sd == -1)
 		return (error(0, errno, "failed to accept"), EXIT_FAILURE);
-	if (!inet_ntop(AF_INET, &client, ip_buf, INET_ADDRSTRLEN))
+	if (!inet_ntop(AF_INET, &client.sin_addr, ip_buf, INET_ADDRSTRLEN))
 		return (error(0, errno, "failed to get IP"), EXIT_FAILURE);
-
+	printf("Client connected: %s\n", ip_buf);
 	while ((n_read = read(client_sd, request_buf, REQUEST_BUF_SZ)) > 0)
 	{
 		request_buf[n_read] = '\0';
@@ -70,9 +70,8 @@ int main(void)
 		error(EXIT_FAILURE, errno, "failed to listen for connections");
 	printf("Server listening on port %d\n", ntohs(server.sin_port));
 
-	while (1)
-		accept_connections(server_sd);
-
+	accept_connections(server_sd);
 	close(server_sd);
+
 	return (EXIT_SUCCESS);
 }
