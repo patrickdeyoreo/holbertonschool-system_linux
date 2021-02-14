@@ -56,16 +56,15 @@ int connect_to_server(struct addrinfo *addr, unsigned short int port)
 			host->ai_protocol);
 		if (client_sd == -1)
 		{
-			error(0, errno, "failed to create socket");
+			error(0, errno, "Failed to create socket");
 			continue;
 		}
 		server = (struct sockaddr_in *) host->ai_addr;
 		inet_ntop(AF_INET, &server->sin_addr, ip_buf, INET_ADDRSTRLEN);
 		server->sin_port = htons(port);
-		printf("Attempting to connect to %s:%d ...\n", ip_buf, port);
 		if (connect(client_sd, host->ai_addr, host->ai_addrlen) == -1)
 		{
-			error(0, errno, "failed to connect to host");
+			error(0, errno, "Failed to connect to host");
 			close(client_sd);
 			client_sd = -1;
 			continue;
@@ -103,7 +102,7 @@ int main(int argc, char **argv)
 	client_sd = connect_to_server(addr, port);
 	freeaddrinfo(addr);
 	if (client_sd == -1)
-		error(EXIT_FAILURE, 0, "failed to connect to host");
+		error(EXIT_FAILURE, 0, "Failed to connect to host");
 	printf("Connected to %s:%d\n", argv[1], port);
 	close(client_sd);
 	return (EXIT_SUCCESS);
