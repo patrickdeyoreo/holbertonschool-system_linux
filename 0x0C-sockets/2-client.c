@@ -10,8 +10,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "client.h"
-
 #define PUSAGE(stream, program_name) \
 	fprintf((stream), "Usage: %s <host> <port>\n", (program_name))
 

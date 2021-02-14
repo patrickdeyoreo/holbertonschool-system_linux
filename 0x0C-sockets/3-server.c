@@ -36,12 +36,13 @@ static int accept_connections(int server_sd)
 	if (!inet_ntop(AF_INET, &client.sin_addr, ip_buf, INET_ADDRSTRLEN))
 		return (error(0, errno, "failed to get IP"), EXIT_FAILURE);
 	printf("Client connected: %s\n", ip_buf);
+	printf("Message received: \"");
 	while ((n_read = read(client_sd, request_buf, REQUEST_BUF_SZ)) > 0)
 	{
 		request_buf[n_read] = '\0';
 		printf("%s", request_buf);
 	}
-	printf("\n");
+	printf("\"\n");
 	if (n_read == -1)
 		return (error(0, errno, "failed to read"), EXIT_FAILURE);
 	close(client_sd);
