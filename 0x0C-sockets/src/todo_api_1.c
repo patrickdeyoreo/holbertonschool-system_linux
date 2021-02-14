@@ -34,6 +34,8 @@ void parse_request(char *request_buf)
 
 	strtok_r(request_buf, DELIMS, &request_save);
 	path = strtok_r(NULL, DELIMS, &request_save);
+
+	printf("Path: %s\n", path);
 	strtok_r(path, "?", &path_save);
 	params = strtok_r(NULL, "", &path_save);
 
@@ -45,5 +47,4 @@ void parse_request(char *request_buf)
 		printf("Query: \"%s\" -> \"%s\"\n", key, value);
 		param = strtok_r(NULL, "&", &params_save);
 	}
-	printf("Path: %s\n", path);
 }
