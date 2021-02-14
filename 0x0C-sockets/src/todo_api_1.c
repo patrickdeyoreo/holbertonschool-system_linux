@@ -41,7 +41,7 @@ void parse_request(char *request_buf)
 	{
 		key = strtok_r(param, "=", &param_save);
 		value = strtok_r(NULL, "", &param_save);
-		printf("param: \"%s\" -> \"%s\"\n", key, value);
+		printf("Query: \"%s\" -> \"%s\"\n", key, value);
 		param = strtok_r(NULL, "&", &path_save);
 	}
 }
