@@ -12,9 +12,8 @@
 
 #include "client.h"
 
-#define PUSAGE(stream) \
-	fprintf((stream), "Usage: %s <host> <port>\n", \
-		(program_invocation_name))
+#define PUSAGE(stream, program_name) \
+	fprintf((stream), "Usage: %s <host> <port>\n", (program_name))
 
 /**
  * strtoport - convert a string to a port number
@@ -96,8 +95,7 @@ int main(int argc, char **argv)
 	unsigned short int port = 0;
 
 	if (argc != 3)
-		return (PUSAGE(stderr), EXIT_FAILURE);
-
+		return (PUSAGE(stderr, argv[0]), EXIT_FAILURE);
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	gai_errno = getaddrinfo(argv[1], NULL, &hints, &addr);

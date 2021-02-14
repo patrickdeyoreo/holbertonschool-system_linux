@@ -27,6 +27,8 @@ static int accept_connections(int server_sd)
 	struct sockaddr_in client = {0};
 	socklen_t client_sz = sizeof(client);
 	char ip_buf[INET_ADDRSTRLEN + 1] = {0};
+	char request_buf[REQUEST_BUF_SZ + 1] = {0};
+	ssize_t n_read = 0;
 
 	client_sd = accept(server_sd, (struct sockaddr *) &client, &client_sz);
 	if (client_sd == -1)
@@ -34,6 +36,14 @@ static int accept_connections(int server_sd)
 	if (!inet_ntop(AF_INET, &client.sin_addr, ip_buf, INET_ADDRSTRLEN))
 		return (error(0, errno, "failed to get IP"), EXIT_FAILURE);
 	printf("Client connected: %s\n", ip_buf);
+	while ((n_read = read(client_sd, request_buf, REQUEST_BUF_SZ)) > 0)
+	{
+		request_buf[n_read] = '\0';
+		printf("%s", request_buf);
+	}
+	printf("\n");
+	if (n_read == -1)
+		return (error(0, errno, "failed to read"), EXIT_FAILURE);
 	close(client_sd);
 	return (EXIT_SUCCESS);
 }
