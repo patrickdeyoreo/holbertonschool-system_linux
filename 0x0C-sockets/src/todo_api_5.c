@@ -9,6 +9,7 @@
 
 static unsigned int id;
 static todo_t *todo_head;
+static todo_t *todo_tail;
 
 /**
  * main - entry point
@@ -81,9 +82,8 @@ char *parse_post_request(char *body, size_t content_length)
 {
 	char *query, *key, *value, *body_save, *query_save;
 	char *title = NULL, *description = NULL;
-	char buf1[BUF_SZ] = {0};
-	char buf2[BUF_SZ] = {0};
-	todo_t *todo = NULL, *temp = NULL;
+	char buf1[BUF_SZ] = {0}, buf2[BUF_SZ] = {0};
+	todo_t *todo = NULL;
 
 	body[content_length] = 0;
 	query = strtok_r(body, "&", &body_save);
@@ -106,17 +106,10 @@ char *parse_post_request(char *body, size_t content_length)
 	todo->id = id++;
 	todo->title = strdup(title);
 	todo->description = strdup(description);
-	if (todo_head)
-	{
-		temp = todo_head;
-		while (temp->next)
-			temp = temp->next;
-		temp->next = todo;
-	}
+	if (todo_tail)
+		todo_tail->next = todo, todo_tail = todo;
 	else
-	{
-		todo_head = todo;
-	}
+		todo_tail = todo_head = todo;
 	sprintf(buf2,
 		"{\"" TODO_ID "\":%d,\""
 		TODO_TITLE "\":\"%s\",\""
@@ -136,8 +129,7 @@ char *parse_post_request(char *body, size_t content_length)
  */
 char *parse_get_request()
 {
-	char buf1[BUF_SZ] = {0};
-	char buf2[BUF_SZ] = {0};
+	char buf1[BUF_SZ] = {0}, buf2[BUF_SZ] = {0};
 	todo_t *todo = todo_head;
 
 	buf2[0] = '[';
