@@ -11,6 +11,7 @@
 
 #include "http.h"
 #include "server.h"
+#include "util.h"
 
 /**
  * start_server - start a server and begin accepting connections
@@ -67,8 +68,9 @@ int accept_connections(int server_sd)
 	struct sockaddr_in client = {0};
 	socklen_t client_sz = sizeof(client);
 	int client_sd = -1;
-	char ip_buf[INET_ADDRSTRLEN + 1] = {0};
-	char request_buf[REQUEST_BUF_SZ] = {0};
+	char ip[INET_ADDRSTRLEN + 1] = {0};
+	char request[REQUEST_BUF_SZ] = {0};
+	char *response = NULL;
 
 	client_sd = accept(server_sd, (struct sockaddr *) &client, &client_sz);
 	if (client_sd == -1)
@@ -76,27 +78,29 @@ int accept_connections(int server_sd)
 		error(0, errno, "Failed to accept connection");
 		return (EXIT_FAILURE);
 	}
-	if (!inet_ntop(AF_INET, &client.sin_addr, ip_buf, INET_ADDRSTRLEN))
+	if (!inet_ntop(AF_INET, &client.sin_addr, ip, INET_ADDRSTRLEN))
 	{
 		error(0, errno, "Failed to get client address");
 		close(client_sd);
 		return (EXIT_FAILURE);
 	}
-	if (recv_request(client_sd, request_buf, REQUEST_BUF_SZ) == -1)
+	if (recv_request(client_sd, request, REQUEST_BUF_SZ) == -1)
 	{
 		error(0, errno, "Failed to receive request from client");
 		close(client_sd);
 		return (EXIT_FAILURE);
 	}
-	printf("Client connected: %s\n", ip_buf);
-	printf("Raw request: \"%s\"\n", request_buf);
-	parse_request(request_buf);
-	if (send_response(client_sd, HTTP_RESPONSE_200) == -1)
+	printf("Client connected: %s\n", ip);
+	printf("Raw request: \"%s\"\n", request);
+	response = parse_request(request);
+	if (response && send_response(client_sd, response) == -1)
 	{
 		error(0, errno, "Failed to send response to client");
+		free(response);
 		close(client_sd);
 		return (EXIT_FAILURE);
 	}
+	free(response);
 	close(client_sd);
 	return (EXIT_SUCCESS);
 }

@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "http.h"
 #include "server.h"
+#include "util.h"
 
 /**
  * main - entry point
@@ -17,11 +19,12 @@ int main(void)
 /**
  * parse_request - parse a request
  *
- * @request_buf: pointer to the start of a null-terminated request
+ * @request: pointer to the start of a null-terminated request
+ *
+ * Return: response to send to client
  */
-void parse_request(char *request_buf)
+char *parse_request(char *request)
 {
-	const char *DELIMS = " \t\n\r";
 	char *request_save = NULL;
 	char *path_save = NULL;
 	char *param_save = NULL;
@@ -30,8 +33,8 @@ void parse_request(char *request_buf)
 	char *key = NULL;
 	char *value = NULL;
 
-	strtok_r(request_buf, DELIMS, &request_save);
-	path = strtok_r(NULL, DELIMS, &request_save);
+	strtok_r(request, SPACE, &request_save);
+	path = strtok_r(NULL, SPACE, &request_save);
 
 	strtok_r(path, "?", &path_save);
 	printf("Path: %s\n", path);
@@ -44,4 +47,5 @@ void parse_request(char *request_buf)
 		printf("Query: \"%s\" -> \"%s\"\n", key, value);
 		param = strtok_r(NULL, "&", &path_save);
 	}
+	return (strdup(HTTP_200));
 }
