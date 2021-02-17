@@ -83,7 +83,7 @@ char *parse_post_request(char *body, size_t content_length)
 	char *title = NULL, *description = NULL;
 	char buf1[BUF_SZ] = {0};
 	char buf2[BUF_SZ] = {0};
-	todo_t *todo = NULL;
+	todo_t *todo = NULL, *temp = NULL;
 
 	body[content_length] = 0;
 	query = strtok_r(body, "&", &body_save);
@@ -106,8 +106,17 @@ char *parse_post_request(char *body, size_t content_length)
 	todo->id = id++;
 	todo->title = strdup(title);
 	todo->description = strdup(description);
-	todo->next = todo_head;
-	todo_head = todo;
+	if (todo_head)
+	{
+		temp = todo_head;
+		while (temp->next)
+			temp = temp->next;
+		temp->next = todo;
+	}
+	else
+	{
+		todo_head = todo;
+	}
 	sprintf(buf2,
 		"{\"" TODO_ID "\":%d,\""
 		TODO_TITLE "\":\"%s\",\""
