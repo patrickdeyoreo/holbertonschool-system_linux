@@ -33,6 +33,7 @@ char *api_route(http_request_t *request)
 		if (!strcasecmp(request->path, api_endpoint->path) &&
 		    !strcasecmp(request->method, api_endpoint->method))
 			return (api_endpoint->fn(request));
+		api_endpoint += 1;
 	}
 	return (strdup(HTTP_404));
 }
