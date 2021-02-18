@@ -158,5 +158,30 @@ char *get_todos(http_request_t *request)
  */
 char *delete_todos(http_request_t *request __attribute__((unused)))
 {
-	return (NULL);
+	todo_t *todo = todo_head, **todo_prev = &todo_head;
+	dict_item_t *param_id = dict_get(request->params, "id");
+	char *id_end = NULL;
+	ssize_t id = -1;
+
+	if (!param_id)
+		return (strdup(HTTP_404));
+
+	id = strtoul(param_id->value, &id_end, 10);
+	if (!*param_id->value || *id_end)
+		return (strdup(HTTP_404));
+
+	while (todo && todo->id != id)
+	{
+		todo_prev = &todo->next;
+		todo = todo->next;
+	}
+	if (!todo)
+		return (strdup(HTTP_404));
+
+	*todo_prev = todo->next;
+	free(todo->title);
+	free(todo->description);
+	free(todo);
+
+	return (strdup(HTTP_204));
 }
