@@ -103,23 +103,44 @@ char *post_todos(http_request_t *request)
  * Return: If memory allocation fails, return NULL.
  * Otherwise, return a response to send to the client.
  */
-char *get_todos(http_request_t *request __attribute__((unused)))
+char *get_todos(http_request_t *request)
 {
 	char buf1[BUF_SZ] = {0}, buf2[BUF_SZ] = {0};
 	todo_t *todo = todo_head;
+	dict_item_t *param_id = dict_get(request->params, "id");
+	char *id_end = NULL;
+	ssize_t id = -1;
 
-	buf2[0] = '[';
-	while (todo)
+	if (param_id)
 	{
-		sprintf(buf2 + strlen(buf2),
+		id = strtoul(param_id->value, &id_end, 10);
+		if (!*param_id->value || *id_end)
+			id = -1;
+		while (todo && todo->id != id)
+			todo = todo->next;
+		if (!todo)
+			return (strdup(HTTP_404));
+		sprintf(buf2,
 			"{\"" TODO_ID "\":%d,\""
 			TODO_TITLE "\":\"%s\",\""
-			TODO_DESCRIPTION "\":\"%s\"}%s",
-			todo->id, todo->title, todo->description,
-			todo->next ? "," : "");
-		todo = todo->next;
+			TODO_DESCRIPTION "\":\"%s\"}",
+			todo->id, todo->title, todo->description);
 	}
-	buf2[strlen(buf2)] = ']';
+	else
+	{
+		buf2[0] = '[';
+		while (todo)
+		{
+			sprintf(buf2 + strlen(buf2),
+				"{\"" TODO_ID "\":%d,\""
+				TODO_TITLE "\":\"%s\",\""
+				TODO_DESCRIPTION "\":\"%s\"}%s",
+				todo->id, todo->title, todo->description,
+				todo->next ? "," : "");
+			todo = todo->next;
+		}
+		buf2[strlen(buf2)] = ']';
+	}
 	sprintf(buf1,
 		HTTP_200_NOCRLF CRLF CONTENT_LENGTH ": %lu" CRLF
 		CONTENT_TYPE ": " CONTENT_TYPE_JSON CRLF CRLF "%s",
