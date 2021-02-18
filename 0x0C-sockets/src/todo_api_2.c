@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "api.h"
+#include "dict.h"
 #include "http.h"
 #include "server.h"
 #include "util.h"
@@ -17,13 +19,13 @@ int main(void)
 }
 
 /**
- * parse_request - parse a request
+ * handle_request - parse a request
  *
  * @request: pointer to the start of a null-terminated request
  *
  * Return: response to send to client
  */
-char *parse_request(char *request)
+char *handle_request(char *request)
 {
 	char *request_save = NULL;
 	char *header_save = NULL;

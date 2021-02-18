@@ -1,6 +1,7 @@
 #ifndef _HTTP_H_
 #define _HTTP_H_
 
+#include "dict.h"
 #include "util.h"
 
 #define HTTP_GET "GET"
@@ -34,5 +35,28 @@
 
 #define CONTENT_TYPE_JSON "application/json"
 #define CONTENT_TYPE_X_WWW_FORM_URLENCODED "application/x-www-form-urlencoded"
+
+/**
+ * struct http_request_s - HTTP request structure
+ *
+ * @method: HTTP method
+ * @path: resource path
+ * @version: HTTP version
+ * @params: URL parameters
+ * @headers: request headers
+ * @body: request body
+ */
+typedef struct http_request_s
+{
+	char *method;
+	char *path;
+	char *version;
+	dict_t *params;
+	dict_t *headers;
+	char *body;
+} http_request_t;
+
+http_request_t *http_request_create(char *request);
+void http_request_delete(http_request_t *http_request);
 
 #endif /* _HTTP_H_ */

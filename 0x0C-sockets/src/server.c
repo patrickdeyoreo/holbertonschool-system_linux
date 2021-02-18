@@ -92,7 +92,7 @@ int accept_connections(int server_sd)
 	}
 	printf("Client connected: %s\n", ip);
 	printf("Raw request: \"%s\"\n", request);
-	response = parse_request(request);
+	response = handle_request(request);
 	if (response && send_response(client_sd, response) == -1)
 	{
 		error(0, errno, "Failed to send response to client");
